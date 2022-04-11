@@ -6,7 +6,22 @@
         "tesco": "https://www.tesco.ie/groceries/en-IE/products/299531363",
         "dunnes": "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/19-crimes-the-uprising-red-wine-750ml-100227693"
       },
-      "recordedPrices": []
+      "recordedPrices": [
+        {
+          "date": 1649606246476,
+          "prices": {
+            "tesco": 10,
+            "dunnes": 9.6
+          }
+        },
+        {
+          "date": 1649606792386,
+          "prices": {
+            "tesco": 10,
+            "dunnes": 9.6
+          }
+        }
+      ]
     },
     {
       "name": "19 Crimes, Red Wine",
@@ -15,7 +30,24 @@
         "dunnes": "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/19-crimes-red-wine-750ml-100873366",
         "supervalu": "https://shop.supervalu.ie/shopping/product/1531948000"
       },
-      "recordedPrices": []
+      "recordedPrices": [
+        {
+          "date": 1649606247678,
+          "prices": {
+            "tesco": 10,
+            "dunnes": 9.6,
+            "supervalu": 15.5
+          }
+        },
+        {
+          "date": 1649606793632,
+          "prices": {
+            "tesco": 10,
+            "dunnes": 9.6,
+            "supervalu": 15.5
+          }
+        }
+      ]
     }
   ]
 }

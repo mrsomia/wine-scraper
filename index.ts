@@ -1,42 +1,24 @@
-import { db, Item } from './lib/db.js';
-import { getDunnesPrice, getSuperValuPrice, getTescoPrice } from "./lib/utils.js";
+import Fastify from 'fastify';
+import { db } from './lib/db.js';
 
-async function scrapePrices(items: Item[]) {
-  for (let item of items) {
-    let tPromise, dPromise, sPromise;
-
-    for (let prop in item.URLs) {
-      if (prop === 'tesco') {
-        tPromise = getTescoPrice(item.URLs[prop])
-      }
-      if (prop === 'dunnes') {
-        dPromise = getDunnesPrice(item.URLs[prop])
-      }
-      if (prop === 'supervalu') {
-        // @ts-ignore
-        sPromise = getSuperValuPrice(item.URLs[prop])
-      }
-    }
-
-    const [tPrice, dPrice, sPrice] = await Promise.all([tPromise, dPromise, sPromise])
-    const priceObj = {
-      date: Date.now(),
-      prices: {
-        tesco: tPrice,
-        dunnes: dPrice
-      }
-    }
-    
-    // @ts-ignore
-    if (sPrice) priceObj.prices.supervalu = sPrice
-
-    item.recordedPrices.push(priceObj)
-    db.write()
-
-  }
-
-}
-
+const fastify = Fastify({logger: true})
 const items = db.data?.items ?? []
 
-scrapePrices(items)
+fastify.get('/prices',async (request, reply) => {
+  let response: any[] = []
+  for (let item of items) {
+    const { name, recordedPrices } = item;
+    let priceObj = recordedPrices[recordedPrices.length - 1]
+    response.push({name, priceObj})
+  }
+  reply.send(response)
+})
+
+
+fastify.listen(8080,function (err, address) {
+  if (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+  console.log(`Server is now listening on ${address}`)
+})
