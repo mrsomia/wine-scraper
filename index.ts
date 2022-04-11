@@ -5,7 +5,7 @@ import { scrapePrices } from './lib/utils.js';
 import { checkAndPing } from './lib/notification.js'
 
 
-const job = schedule.scheduleJob('44 0 * * *', async function(){
+const job = schedule.scheduleJob('0 10 * * *', async function(){
   await scrapePrices(db)
   checkAndPing(db)
 })
