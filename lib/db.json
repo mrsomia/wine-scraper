@@ -10,12 +10,12 @@
         {
           "date": 1649606246476,
           "prices": {
-            "tesco": 10,
-            "dunnes": 9.6
+            "tesco": 15,
+            "dunnes": 15
           }
         },
         {
-          "date": 1649606792386,
+          "date": 1649634241029,
           "prices": {
             "tesco": 10,
             "dunnes": 9.6
@@ -34,13 +34,13 @@
         {
           "date": 1649606247678,
           "prices": {
-            "tesco": 10,
-            "dunnes": 9.6,
+            "tesco": 15,
+            "dunnes": 15,
             "supervalu": 15.5
           }
         },
         {
-          "date": 1649606793632,
+          "date": 1649634241980,
           "prices": {
             "tesco": 10,
             "dunnes": 9.6,

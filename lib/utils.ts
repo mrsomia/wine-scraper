@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import "dotenv/config"
 
 import { Low } from "lowdb/lib";
-import { Data, RecordedPrice } from "./db";
+import { Data } from "./db";
 
 
 export async function getHTML(url:string) {
@@ -65,21 +65,4 @@ export async function scrapePrices(db: Low<Data>) {
     item.recordedPrices.push(priceObj)
     db.write()
   }
-}
-
-
-const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
-
-export async function pingDetails(name: string , prices: RecordedPrice) {
-  axios.post( PUSHOVER_URL,
-    {
-      token: process.env.PUSHOVER_APP_KEY,
-      user: process.env.PUSHOVER_USER_KEY,
-      message: `The price of ${name} in Tesco is ${prices.prices.tesco}`
-    }
-  )
-}
-
-export async function checkAndPing(db: Low<Data>) {
-  const items = db.data?.items ?? []
 }

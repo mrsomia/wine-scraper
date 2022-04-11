@@ -1,12 +1,13 @@
 import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { db } from './lib/db.js';
-import { pingDetails, scrapePrices } from './lib/utils.js';
+import { scrapePrices } from './lib/utils.js';
+import { checkAndPing } from './lib/notification.js'
 
 
-const job = schedule.scheduleJob('0 9 * * *', async function(){
+const job = schedule.scheduleJob('44 0 * * *', async function(){
   await scrapePrices(db)
-  // pingDetails("wine", prices)
+  checkAndPing(db)
 })
 
 const fastify = Fastify({logger: true})
