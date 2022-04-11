@@ -20,4 +20,6 @@ npm i -g ts-node
 
 After this you can start the server when required using:
 
-`npm start`
+```
+npm start
+```
