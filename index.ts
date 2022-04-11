@@ -1,4 +1,5 @@
-import { getDunnesPrice, getTescoPrice } from "./lib/utils";
+import { Item, RecordedPrice, Data, db } from './lib/db.js';
+import { getDunnesPrice, getTescoPrice } from "./lib/utils.js";
 
 async function go() {
 const tPromise = getTescoPrice("https://www.tesco.ie/groceries/en-IE/products/299531363")
@@ -10,4 +11,6 @@ console.log(`The price of this wine in Dunne's is ${dPrice}`)
 
 }
 
-go()
+console.log(db.data)
+
+// go()
