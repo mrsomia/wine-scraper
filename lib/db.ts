@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url'
 export type Item = {
   name: string,
   URLs: {
-    tesco?: string,
-    dunnes?: string
+    tesco: string,
+    dunnes: string
   }
 }
 

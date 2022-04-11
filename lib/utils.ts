@@ -6,17 +6,17 @@ export async function getHTML(url:string) {
   return data
 }
 
-export async function getTescoPrice(url:string) {
+export async function getTescoPrice(url:string): Promise<Number> {
   const data = await getHTML(url)
   const $ = cheerio.load(data)
   const price = $(".price-per-sellable-unit .value")
-  return price.text()
+  return parseFloat(price.text())
 }
 
-export async function getDunnesPrice(url:string) {
+export async function getDunnesPrice(url:string): Promise<Number> {
   const data = await getHTML(url)
   const $ = cheerio.load(data)
   const price = $("[itemprop=price]")[0].attribs.content
-  return price.slice(1)
+  return parseFloat(price.slice(1))
 }
  

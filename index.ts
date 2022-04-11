@@ -1,16 +1,27 @@
-import { Item, RecordedPrice, Data, db } from './lib/db.js';
+import { db, Item } from './lib/db.js';
 import { getDunnesPrice, getTescoPrice } from "./lib/utils.js";
 
-async function go() {
-const tPromise = getTescoPrice("https://www.tesco.ie/groceries/en-IE/products/299531363")
-const dPromise = getDunnesPrice("https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/19-crimes-the-uprising-red-wine-750ml-100227693")
+async function fetchPrices(items: Item[]) {
+  for (let item of items) {
+    let tPromise
+    let dPromise
+    for (let prop in item.URLs) {
+      if (prop === 'tesco') {
+        tPromise = getTescoPrice(item.URLs[prop])
+      }
+      if (prop === 'dunnes') {
+        dPromise = getDunnesPrice(item.URLs[prop])
+      }
+    }
+    const [tPrice, dPrice] = await Promise.all([tPromise, dPromise])
+    console.log(`The price of ${item.name} is:
+      Tesco: ${tPrice?.toFixed(2)}
+      Dunne's ${dPrice?.toFixed(2)}`)
+  }
 
-const [tPrice, dPrice] = await Promise.all([tPromise, dPromise])
-console.log(`The price of this wine in Tesco is ${tPrice}`)
-console.log(`The price of this wine in Dunne's is ${dPrice}`)
 
 }
 
-console.log(db.data)
+const items = db.data?.items ?? []
 
-// go()
+fetchPrices(items)
