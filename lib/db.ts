@@ -13,7 +13,7 @@ export type Item = {
 }
 
 export type RecordedPrice = {
-  date: string,
+  date: number,
   prices: {
     tesco?: Number,
     dunnes?: Number,

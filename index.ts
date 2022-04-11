@@ -1,11 +1,10 @@
 import { db, Item } from './lib/db.js';
 import { getDunnesPrice, getSuperValuPrice, getTescoPrice } from "./lib/utils.js";
 
-async function fetchPrices(items: Item[]) {
+async function scrapePrices(items: Item[]) {
   for (let item of items) {
-    let tPromise
-    let dPromise
-    let sPromise
+    let tPromise, dPromise, sPromise;
+
     for (let prop in item.URLs) {
       if (prop === 'tesco') {
         tPromise = getTescoPrice(item.URLs[prop])
@@ -18,15 +17,26 @@ async function fetchPrices(items: Item[]) {
         sPromise = getSuperValuPrice(item.URLs[prop])
       }
     }
+
     const [tPrice, dPrice, sPrice] = await Promise.all([tPromise, dPromise, sPromise])
-    console.log(`The price of ${item.name} is:
-      Tesco: ${tPrice?.toFixed(2)}
-      Dunne's: ${dPrice?.toFixed(2)}
-      ${sPrice ? "SuperValu " + sPrice?.toFixed(2) : ""}`)
+    const priceObj = {
+      date: Date.now(),
+      prices: {
+        tesco: tPrice,
+        dunnes: dPrice
+      }
+    }
+    
+    // @ts-ignore
+    if (sPrice) priceObj.prices.supervalu = sPrice
+
+    item.recordedPrices.push(priceObj)
+    db.write()
+
   }
 
 }
 
 const items = db.data?.items ?? []
 
-fetchPrices(items)
+scrapePrices(items)
