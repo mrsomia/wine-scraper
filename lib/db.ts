@@ -6,8 +6,10 @@ export type Item = {
   name: string,
   URLs: {
     tesco: string,
-    dunnes: string
-  }
+    dunnes: string,
+    supervalu?: string
+  },
+  recordedPrices: RecordedPrice[]
 }
 
 export type RecordedPrice = {
@@ -21,7 +23,6 @@ export type RecordedPrice = {
 
 export type Data = {
   items: Item[],
-  recordedPrices: RecordedPrice[]
 }
 
 const exampleData = {

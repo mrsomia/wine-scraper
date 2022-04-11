@@ -19,4 +19,10 @@ export async function getDunnesPrice(url:string): Promise<Number> {
   const price = $("[itemprop=price]")[0].attribs.content
   return parseFloat(price.slice(1))
 }
- 
+
+export async function getSuperValuPrice(url:string): Promise<Number> {
+  const data = await getHTML(url)
+  const $ = cheerio.load(data)
+  const price = $(".product-details-price-item")
+  return parseFloat(price.text().trim().slice(1))
+}
