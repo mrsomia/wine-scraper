@@ -1,5 +1,11 @@
 import Fastify from 'fastify';
+import schedule from 'node-schedule'
 import { db } from './lib/db.js';
+import { scrapePrices } from './lib/utils.js';
+
+const job = schedule.scheduleJob('0 8 * * *', function(){
+  scrapePrices(db)
+})
 
 const fastify = Fastify({logger: true})
 const items = db.data?.items ?? []
