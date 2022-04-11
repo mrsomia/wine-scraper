@@ -6,10 +6,17 @@ export async function getHTML(url:string) {
   return data
 }
 
-export async function getTescoWine(url:string) {
+export async function getTescoPrice(url:string) {
   const data = await getHTML(url)
   const $ = cheerio.load(data)
   const price = $(".price-per-sellable-unit .value")
   return price.text()
+}
+
+export async function getDunnesPrice(url:string) {
+  const data = await getHTML(url)
+  const $ = cheerio.load(data)
+  const price = $("[itemprop=price]")[0].attribs.content
+  return price.slice(1)
 }
  
