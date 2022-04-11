@@ -23,3 +23,5 @@ After this you can start the server when required using:
 ```
 npm start
 ```
+
+To track new items, simply add an object in the `lib/db.json` file, with the same format.
