@@ -25,10 +25,6 @@ export type Data = {
   items: Item[],
 }
 
-const exampleData = {
-
-}
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Use JSON file for storage

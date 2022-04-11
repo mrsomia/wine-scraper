@@ -1,10 +1,12 @@
 import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { db } from './lib/db.js';
-import { scrapePrices } from './lib/utils.js';
+import { pingDetails, scrapePrices } from './lib/utils.js';
 
-const job = schedule.scheduleJob('0 8 * * *', function(){
-  scrapePrices(db)
+
+const job = schedule.scheduleJob('0 9 * * *', async function(){
+  await scrapePrices(db)
+  // pingDetails("wine", prices)
 })
 
 const fastify = Fastify({logger: true})
@@ -14,8 +16,8 @@ fastify.get('/prices',async (request, reply) => {
   let response: any[] = []
   for (let item of items) {
     const { name, recordedPrices } = item;
-    let priceObj = recordedPrices[recordedPrices.length - 1]
-    response.push({name, priceObj})
+    let data = recordedPrices[recordedPrices.length - 1]
+    response.push({name, data})
   }
   reply.send(response)
 })
