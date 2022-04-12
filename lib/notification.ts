@@ -34,7 +34,7 @@ export async function checkAndPing(db: Low<Data>) {
       toPing.push({name, shop, price})
     } // pingDetails(tMin)
   }
-  pingDetails(toPing)
+  if (toPing.length) pingDetails(toPing)
 }
 
 function getMin(priceObj: RecordedPrice) {
