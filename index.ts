@@ -10,7 +10,12 @@ const job = schedule.scheduleJob('0 10 * * *', async function(){
   checkAndPing(db)
 })
 
-const fastify = Fastify({logger: true})
+const fastify = Fastify({
+  logger: {
+    level : 'info',
+    file: './logs/logs.txt'
+  }
+})
 const items = db.data?.items ?? []
 
 fastify.get('/prices',async (request, reply) => {

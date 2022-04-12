@@ -15,7 +15,8 @@
   },
   "scripts": {
     "start": "ts-node --esm ./index.ts",
-    "dev": "nodemon --esm ./index.ts --ignore db.json"
+    "dev": "nodemon --esm ./index.ts --ignore db.json",
+    "setup": "npm i; mkdir logs; touch .env ./logs/logs.txt"
   },
   "name": "wine-scraper",
   "version": "1.0.0",
