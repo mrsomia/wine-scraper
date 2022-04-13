@@ -18,7 +18,7 @@
           "date": 1649634241029,
           "prices": {
             "tesco": 10,
-            "dunnes": 9.6
+            "dunnes": 9
           }
         }
       ]
@@ -43,7 +43,7 @@
           "date": 1649634241980,
           "prices": {
             "tesco": 10,
-            "dunnes": 9.6,
+            "dunnes": 9,
             "supervalu": 15.5
           }
         }
