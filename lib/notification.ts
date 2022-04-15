@@ -25,29 +25,28 @@ export async function pingDetails(toPing: any[], log:FastifyLoggerInstance) {
   }
 }
 
-
 export async function checkAndPing(db: Low<Data>, log: FastifyLoggerInstance) {
   const items = db.data?.items ?? [];
   let toPing = []
   for (let item of items) {
     const { name, recordedPrices } = item
-    
-    // fix the below line to hanle 1 item in the array
-    const [ previous, current ] = recordedPrices.slice(-2)
-    const pMin = getMin(previous)
-    const cMin = getMin(current)
-    const { shop, price } = cMin
-    
-    if (cMin.shop && !pMin.shop) {
-      toPing.push({change: 'down' ,name, shop, minPrice: price})
-    }
-
-    // TODO: Refactor below, perhaps a new function to make it clear this is comparison code
-    if (cMin.shop && pMin.shop){
-      if (cMin.price < pMin.price) {
-        toPing.push({change: 'down' ,name, shop, minPrice: price})
-      } else if (cMin.price > pMin.price) {
-        toPing.push({change: 'up' ,name, shop, minPrice: price})
+    if (recordedPrices.length < 1) continue
+  
+    let [ first, second ] = recordedPrices.slice(-2)
+    let fMin = getMin(first)
+    let sMin
+    if (!second) {
+      toPing.push({change: 'down' , name, shop: fMin.shop, minPrice: fMin.price})
+    } else {
+      sMin = getMin(second)
+      let { shop, price } = sMin 
+  
+      if (sMin.shop && fMin.shop){
+        if (sMin.price < fMin.price) {
+          toPing.push({change: 'down' ,name, shop, minPrice: price})
+        } else if (sMin.price > fMin.price) {
+          toPing.push({change: 'up' ,name, shop, minPrice: price})
+        }
       }
     }
   }
@@ -62,6 +61,7 @@ function getMin(priceObj: RecordedPrice) {
   }
 
   for (const shop in prices) {
+    if (!prices[shop]) continue
     if (prices[shop] < min.price || !min.shop) {
       min = { shop, price: prices[shop]}
     }
