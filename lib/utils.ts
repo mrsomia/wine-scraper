@@ -62,6 +62,7 @@ export async function scrapePrices(db: Low<Data>) {
         supervalu: sPrice
       }
     }
+    //@ts-ignore // Lowdb uses JSON.stringify which discard undefined values
     item.recordedPrices.push(priceObj)
     db.write()
   }

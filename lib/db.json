@@ -48,6 +48,15 @@
           }
         }
       ]
+    },
+    {
+      "name": "Jack Daniel's 70cl",
+      "URLs": {
+        "tesco": "https://www.tesco.ie/groceries/en-IE/products/255248604",
+        "dunnes": "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/jack-daniels-tennessee-whiskey-70-cl-100672192",
+        "supervalu": "https://shop.supervalu.ie/shopping/product/1020340001"
+      },
+      "recordedPrices": []
     }
   ]
 }

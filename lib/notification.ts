@@ -10,7 +10,7 @@ const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 export async function pingDetails(toPing: any[], log:FastifyLoggerInstance) {
   let message: string = ''
   for (let item of toPing) {
-    message += `The lowest price of ${item.name} in ${item.shop} went ${item.change} to ${item.minPrice.toFixed(2)}\n`
+    message += `The lowest price of ${item.name} in ${item.shop} went ${item.change} to €${item.minPrice.toFixed(2)}\n`
   }
   try {
     axios.post( PUSHOVER_URL,
@@ -30,12 +30,19 @@ export async function checkAndPing(db: Low<Data>, log: FastifyLoggerInstance) {
   const items = db.data?.items ?? [];
   let toPing = []
   for (let item of items) {
-    let { name, recordedPrices } = item
-    let [ previous, current ] = recordedPrices.slice(-2)
-    let pMin = getMin(previous), cMin = getMin(current)
-    let { shop, price } = cMin
+    const { name, recordedPrices } = item
     
-    if (cMin.shop && !pMin.shop) toPing.push({change: 'down' ,name, shop, minPrice: price})
+    // fix the below line to hanle 1 item in the array
+    const [ previous, current ] = recordedPrices.slice(-2)
+    const pMin = getMin(previous)
+    const cMin = getMin(current)
+    const { shop, price } = cMin
+    
+    if (cMin.shop && !pMin.shop) {
+      toPing.push({change: 'down' ,name, shop, minPrice: price})
+    }
+
+    // TODO: Refactor below, perhaps a new function to make it clear this is comparison code
     if (cMin.shop && pMin.shop){
       if (cMin.price < pMin.price) {
         toPing.push({change: 'down' ,name, shop, minPrice: price})
@@ -48,16 +55,14 @@ export async function checkAndPing(db: Low<Data>, log: FastifyLoggerInstance) {
 }
 
 function getMin(priceObj: RecordedPrice) {
-  let { prices } = priceObj
+  const { prices } = priceObj
   let min = {
     shop: '',
     price: 0
   }
 
-  for (let shop in prices) {
-    //@ts-ignore
+  for (const shop in prices) {
     if (prices[shop] < min.price || !min.shop) {
-      //@ts-ignore
       min = { shop, price: prices[shop]}
     }
   }
