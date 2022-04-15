@@ -2,26 +2,22 @@ import { Low, JSONFile } from 'lowdb'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-export type Item = {
+export interface Item {
   name: string,
   URLs: {
-    tesco: string,
-    dunnes: string,
-    supervalu?: string
+    [location: string]: string
   },
   recordedPrices: RecordedPrice[]
 }
 
-export type RecordedPrice = {
+export interface RecordedPrice {
   date: number,
   prices: {
-    tesco?: Number,
-    dunnes?: Number,
-    supervalu?: Number
+    [location: string]: number
   }
 }
 
-export type Data = {
+export interface Data {
   items: Item[],
 }
 
