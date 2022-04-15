@@ -3,7 +3,7 @@ import "dotenv/config"
 import { FastifyLoggerInstance } from "fastify";
 
 import { Low } from "lowdb/lib";
-import { Data, RecordedPrice } from "./db";
+import { Data, Item, RecordedPrice } from "./db";
 
 const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 
@@ -25,30 +25,33 @@ export async function pingDetails(toPing: any[], log:FastifyLoggerInstance) {
   }
 }
 
+function makeMessageObject(item: Item) {
+  const { name, recordedPrices } = item
+  let [ first, second ] = recordedPrices.slice(-2)
+  let fMin = getMin(first)
+  let sMin
+
+  if (!second) return {change: 'down' , name, shop: fMin.shop, minPrice: fMin.price}
+  
+  sMin = getMin(second)
+  let { shop, price } = sMin 
+
+  if (sMin.shop && fMin.shop){
+    if (sMin.price < fMin.price) {
+      return {change: 'down' ,name, shop, minPrice: price}
+    } else if (sMin.price > fMin.price) {
+      return {change: 'up' ,name, shop, minPrice: price}
+    }
+  }
+}
+
 export async function checkAndPing(db: Low<Data>, log: FastifyLoggerInstance) {
   const items = db.data?.items ?? [];
-  let toPing = []
+  let toPing: any[] = []
   for (let item of items) {
-    const { name, recordedPrices } = item
-    if (recordedPrices.length < 1) continue
-  
-    let [ first, second ] = recordedPrices.slice(-2)
-    let fMin = getMin(first)
-    let sMin
-    if (!second) {
-      toPing.push({change: 'down' , name, shop: fMin.shop, minPrice: fMin.price})
-    } else {
-      sMin = getMin(second)
-      let { shop, price } = sMin 
-  
-      if (sMin.shop && fMin.shop){
-        if (sMin.price < fMin.price) {
-          toPing.push({change: 'down' ,name, shop, minPrice: price})
-        } else if (sMin.price > fMin.price) {
-          toPing.push({change: 'up' ,name, shop, minPrice: price})
-        }
-      }
-    }
+    if (item.recordedPrices.length < 1) continue
+    let notificationObj = makeMessageObject(item)
+    if (notificationObj) toPing.push(notificationObj)
   }
   if (toPing.length) pingDetails(toPing, log)
 }

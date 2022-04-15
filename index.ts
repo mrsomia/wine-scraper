@@ -11,7 +11,7 @@ const fastify = Fastify({
   }
 })
 
-const job = schedule.scheduleJob('0 14 * * *', async function(){
+const job = schedule.scheduleJob('* * * * *', async function(){
   await scrapePrices(db)
   checkAndPing(db, fastify.log)
 })
