@@ -14,13 +14,13 @@
     "ts-node": "^10.7.0"
   },
   "scripts": {
-    "start": "ts-node --esm ./index.ts",
-    "dev": "nodemon --esm ./index.ts --ignore db.json",
+    "start": "ts-node --esm ./src/index.ts",
+    "dev": "nodemon --esm ./src/index.ts --ignore ./src/lib/db.json",
     "setup": "npm i; mkdir logs; touch .env ./logs/logs.txt"
   },
   "name": "wine-scraper",
   "version": "1.0.0",
-  "exports": "./index.js",
+  "exports": "./src/index.js",
   "author": "",
   "license": "ISC",
   "description": "",
