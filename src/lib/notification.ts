@@ -1,31 +1,34 @@
 import axios from "axios";
 import "dotenv/config"
-import { FastifyLoggerInstance } from "fastify";
 
 import { Low } from "lowdb/lib";
 import { Data, Item, RecordedPrice } from "./db";
 
 const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 
-export async function pingDetails(toPing: any[], log:FastifyLoggerInstance) {
+interface MessageObject {
+  change: 'up' | 'down',
+  name: string,
+  shop: string,
+  minPrice: number
+}
+
+export async function pingDetails(toPing: MessageObject[]) {
+  if (!toPing.length) return
   let message: string = ''
   for (let item of toPing) {
     message += `The lowest price of ${item.name} in ${item.shop} went ${item.change} to €${item.minPrice.toFixed(2)}\n`
   }
-  try {
-    axios.post( PUSHOVER_URL,
-      {
-        token: process.env.PUSHOVER_APP_KEY,
-        user: process.env.PUSHOVER_USER_KEY,
-        message
-      }
-    )
-  } catch (err) {
-    log.error("Error sending pushover notification", err)
-  }
+  axios.post( PUSHOVER_URL,
+    {
+      token: process.env.PUSHOVER_APP_KEY,
+      user: process.env.PUSHOVER_USER_KEY,
+      message
+    }
+  )
 }
 
-function makeMessageObject(item: Item) {
+function makeMessageObject(item: Item): MessageObject | void {
   const { name, recordedPrices } = item
   let [ first, second ] = recordedPrices.slice(-2)
   let fMin = getMin(first)
@@ -45,15 +48,15 @@ function makeMessageObject(item: Item) {
   }
 }
 
-export async function checkAndPing(db: Low<Data>, log: FastifyLoggerInstance) {
+export function makeMessageArray(db: Low<Data>) {
   const items = db.data?.items ?? [];
-  let toPing: any[] = []
+  let toPing: MessageObject[] = []
   for (let item of items) {
     if (item.recordedPrices.length < 1) continue
     let notificationObj = makeMessageObject(item)
     if (notificationObj) toPing.push(notificationObj)
   }
-  if (toPing.length) pingDetails(toPing, log)
+  return toPing
 }
 
 function getMin(priceObj: RecordedPrice) {

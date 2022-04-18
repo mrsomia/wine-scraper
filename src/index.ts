@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { db } from './lib/db.js';
 import { scrapePrices } from './lib/utils.js';
-import { checkAndPing } from './lib/notification.js'
+import { makeMessageArray, pingDetails } from './lib/notification.js'
 
 const fastify = Fastify({
   logger: {
@@ -13,7 +13,12 @@ const fastify = Fastify({
 
 const job = schedule.scheduleJob('0 14 * * *', async function(){
   await scrapePrices(db)
-  checkAndPing(db, fastify.log)
+  let messageArr = makeMessageArray(db)
+  try {
+    pingDetails(messageArr)
+  } catch (err) {
+    fastify.log.error(err)
+  }
 })
 
 const items = db.data?.items ?? []
