@@ -1,8 +1,10 @@
 import Fastify from 'fastify';
 import schedule from 'node-schedule'
+import { z } from 'zod'
 import { db } from './lib/db.js';
 import { scrapePrices } from './lib/utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
+import { val } from 'cheerio/lib/api/attributes';
 
 const fastify = Fastify({
   logger: {
@@ -23,7 +25,7 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 
 const items = db.data?.items ?? []
 
-fastify.get('/prices',async (request, reply) => {
+fastify.get('/item-prices', async (request, reply) => {
   let response: any[] = []
   for (let item of items) {
     const { name, recordedPrices } = item;
@@ -33,6 +35,28 @@ fastify.get('/prices',async (request, reply) => {
   reply.send(response)
 })
 
+fastify.post('/item',async (request, reply) => {
+  // inject db, this will allow mocking for testing
+  const { body: item } = request
+  let Item = z.object({
+    name: z.string(),
+    URLs: z.object({
+      tesco: z.string(),
+      dunnes: z.string(),
+      supervalu: z.string()
+    }).partial()
+  })
+  // TODO: Handle errors
+  const vItem = Item.parse(item)
+  const validatedItem = {...vItem, recordedPrices: [] }
+  db.data?.items.push(validatedItem)
+  db.write()
+  reply.send({
+    item: validatedItem,
+    message: 'Success',
+    statusCode: 200
+  })
+})
 
 fastify.listen(8080,function (err, address) {
   if (err) {
