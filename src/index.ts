@@ -46,16 +46,23 @@ fastify.post('/item',async (request, reply) => {
       supervalu: z.string()
     }).partial()
   })
-  // TODO: Handle errors
-  const vItem = Item.parse(item)
-  const validatedItem = {...vItem, recordedPrices: [] }
-  db.data?.items.push(validatedItem)
-  db.write()
-  reply.send({
-    item: validatedItem,
-    message: 'Success',
-    statusCode: 200
-  })
+  const validated = Item.safeParse(item)
+  if (validated.success) {
+    const validatedItem = {...validated.data, recordedPrices: [] }
+    db.data?.items.push(validatedItem)
+    db.write()
+    reply.send({
+      item: validatedItem,
+      message: 'Success',
+    })
+  } else {
+    const { error } = validated
+    reply.code(400)
+      .send({
+      message: 'Error',
+      error: error.issues
+    })
+  }
 })
 
 fastify.listen(8080,function (err, address) {
