@@ -1,12 +1,11 @@
 import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { z } from 'zod'
-import { db } from './lib/db.js';
-import { scrapePrices } from './lib/utils.js';
-import { makeMessageArray, pingDetails } from './lib/notification.js'
-import { val } from 'cheerio/lib/api/attributes';
+import { db } from './lib/db';
+import { scrapePrices } from './lib/utils';
+import { makeMessageArray, pingDetails } from './lib/notification'
 
-const fastify = Fastify({
+export const fastify = Fastify({
   logger: {
     level : 'info',
     file: './logs/logs.txt'
