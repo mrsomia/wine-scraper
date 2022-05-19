@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { fastify } from "../src/index";
 
 describe('/item-prices route', () => {
