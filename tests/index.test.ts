@@ -11,18 +11,21 @@ describe('/item-prices route', () => {
           "tesco": 10,
           "dunnes": 9
         }
-        }
+      }
     },
     {
-    name: '19 Crimes, Red Wine"',
+    name: '19 Crimes, Red Wine',
     data:{
       "date": 1649634241980,
       "prices": {
         "tesco": 10,
         "dunnes": 9,
         "supervalu": 15.5
+        }
       }
-    }
+    },
+    {
+      "name": "Jack Daniel's 70cl"
     }
     ]
 
@@ -30,8 +33,7 @@ describe('/item-prices route', () => {
       method: 'GET',
       url: '/item-prices'
     })
-
     expect(respone.statusCode).toBe(200)
-    expect(respone.body)
+    expect(JSON.parse(respone.body)).toEqual(expected)
   })
 })
