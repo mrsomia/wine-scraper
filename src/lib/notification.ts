@@ -4,9 +4,9 @@ import "dotenv/config"
 import { Low } from "lowdb/lib";
 import { Data, Item, RecordedPrice } from "./db";
 
-const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
+export const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 
-interface MessageObject {
+export interface MessageObject {
   change: 'up' | 'down',
   name: string,
   shop: string,

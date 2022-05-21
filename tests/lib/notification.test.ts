@@ -1,6 +1,8 @@
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { Low } from 'lowdb/lib';
 import { Data } from '../../src/lib/db';
-import { makeMessageArray} from '../../src/lib/notification'
+import { makeMessageArray, pingDetails, MessageObject, PUSHOVER_URL } from '../../src/lib/notification'
+import axios from 'axios'
 
 
 export const mockDb = {
@@ -59,25 +61,50 @@ export const mockDb = {
   }
 }
 
+vi.mock('axios', () => {
+  return {
+    default : {
+      get: vi.fn(),
+      post: vi.fn()
+    }
+  }
+})
+
 describe("Notifications", ()=> {
 
+  afterEach(()=> {
+    vi.clearAllMocks()
+  })
+
+  let expectedCallPingDetailsWith = [
+    {
+      name: "19 Crimes, The Banished Dark Red Wine",
+      shop: "dunnes",
+      change: "down",
+      minPrice: 9
+    },
+    {
+      name: "19 Crimes, Red Wine",
+      shop: "tesco",
+      change: "up",
+      minPrice: 14
+    }
+  ]
+  
   it("Notices prices going up and down", ()=> {
-    let expectedCallWith = [
-      {
-        name: "19 Crimes, The Banished Dark Red Wine",
-        shop: "dunnes",
-        change: "down",
-        minPrice: 9
-      },
-      {
-        name: "19 Crimes, Red Wine",
-        shop: "tesco",
-        change: "up",
-        minPrice: 14
-      }
-    ]
 
     const actual = makeMessageArray(mockDb as unknown as Low<Data>)
-    expect(actual).toEqual(expectedCallWith)
+    expect(actual).toEqual(expectedCallPingDetailsWith)
   })
+
+  it("sends the correct notification", () => {
+    pingDetails(expectedCallPingDetailsWith as MessageObject[])
+    expect(axios.post).toBeCalledTimes(1)
+    expect(axios.post).toBeCalledWith(PUSHOVER_URL, {
+        token: process.env.PUSHOVER_APP_KEY,
+        user: process.env.PUSHOVER_USER_KEY,
+        message: `The lowest price of 19 Crimes, The Banished Dark Red Wine in dunnes went down to €9.00\nThe lowest price of 19 Crimes, Red Wine in tesco went up to €14.00\n`,
+    })
+  })
+
 })

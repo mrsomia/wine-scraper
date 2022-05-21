@@ -10,18 +10,18 @@
     "zod": "^3.14.4"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
     "@types/node": "*",
     "@types/node-schedule": "^1.3.2",
-    "jest": "^27.5.1",
-    "nodemon": "^2.0.15",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^10.7.0"
+    "c8": "^7.11.3",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.7.0",
+    "vitest": "^0.12.6"
   },
   "scripts": {
     "start": "ts-node --esm ./src/index.ts",
     "dev": "nodemon --esm ./src/index.ts --ignore ./src/lib/db.json",
-    "test": "jest",
+    "test": "vitest",
+    "coverage": "vitest --coverage",
     "setup": "npm i; mkdir logs; touch .env ./logs/logs.txt"
   },
   "name": "wine-scraper",
