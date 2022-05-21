@@ -24,7 +24,6 @@ describe('/item-prices route', () => {
       }
     }
     }
-      
     ]
 
     const respone = await fastify.inject({
