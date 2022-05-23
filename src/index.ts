@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { z } from 'zod'
 import { db } from './lib/db.js';
-import { scrapePricesAndAddToDB } from './lib/utils.js';
+import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
 
 export const fastify = Fastify({
