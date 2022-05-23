@@ -10,8 +10,9 @@ export async function getHTML(url:string) {
   return data
 }
 
+type location = "tesco" | "dunnes" | "supervalu"
 interface ScrapedPrice {
-  location: "tesco" | "dunnes" | "supervalu",
+  location: location,
   price: number
 }
 
@@ -68,24 +69,18 @@ const scrapeFunctions = {
 export async function scrapePrices(db: Low<Data>) {
   const items = db.data?.items ?? []
   for (let item of items) {
-    let tPromise, dPromise, sPromise;
+    let scrapePromises: Promise<ScrapedPrice>[] = [];
 
-    for (let prop in item.URLs) {
-      switch (prop) {
-        case 'tesco':
-          tPromise = getTescoPrice(item.URLs[prop])
-          break
-        case 'dunnes':
-          dPromise = getDunnesPrice(item.URLs[prop])
-          break
-        case 'supervalu':
-          sPromise = getSuperValuPrice(item.URLs[prop])
-          break
-        default:
-          break
+    for (let itemurl of Object.entries(item.URLs)) {
+      let [prop, url] = itemurl
+      console.log(itemurl)
+      if (prop === "tesco" || prop === "dunnes" || prop === "supervalu" ) {
+        let func = scrapeFunctions[prop]
+        scrapePromises.push(func(url))
       }
     }
-    const scrapedPricePromises = await Promise.allSettled([tPromise, dPromise, sPromise])
+
+    const scrapedPricePromises = await Promise.allSettled(scrapePromises)
     const priceObj: RecordedPrice = {
       date: Date.now(),
       prices: {}
