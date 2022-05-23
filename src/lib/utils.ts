@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { z } from 'zod'
 import { Low } from "lowdb/lib";
-import { Data, RecordedPrice } from "./db";
+import { Data, Item, RecordedPrice } from "./db";
 
 
 export async function getHTML(url:string) {
@@ -66,34 +66,41 @@ const scrapeFunctions = {
   supervalu: getSuperValuPrice
 }
 
-export async function scrapePrices(db: Low<Data>) {
-  const items = db.data?.items ?? []
-  for (let item of items) {
-    let scrapePromises: Promise<ScrapedPrice>[] = [];
+async function createArrayOfScrapePromises(item: Item): Promise<PromiseSettledResult<ScrapedPrice>[]> {
+  let scrapePromises: Promise<ScrapedPrice>[] = [];
 
-    for (let itemurl of Object.entries(item.URLs)) {
-      let [prop, url] = itemurl
-      console.log(itemurl)
-      if (prop === "tesco" || prop === "dunnes" || prop === "supervalu" ) {
-        let func = scrapeFunctions[prop]
-        scrapePromises.push(func(url))
-      }
+  for (let itemurl of Object.entries(item.URLs)) {
+    let [prop, url] = itemurl
+    if (prop === "tesco" || prop === "dunnes" || prop === "supervalu" ) {
+      let func = scrapeFunctions[prop]
+      scrapePromises.push(func(url))
     }
-
-    const scrapedPricePromises = await Promise.allSettled(scrapePromises)
-    const priceObj: RecordedPrice = {
-      date: Date.now(),
-      prices: {}
-    }
-
-    for (let scrapedPricePromise of scrapedPricePromises) {
-      if (scrapedPricePromise.status === 'rejected') continue
-      if (!scrapedPricePromise.value) continue
-      if (scrapedPricePromise.value.price < 0) continue
-      priceObj.prices[scrapedPricePromise.value.location] = scrapedPricePromise.value.price
-    }
-    
-    item.recordedPrices.push(priceObj)
-    db.write()
   }
+  const scrapedPricePromises = await Promise.allSettled(scrapePromises)
+  return scrapedPricePromises
+}
+
+function createPriceObj(scrapedPricePromises: PromiseSettledResult<ScrapedPrice>[]) {
+  const priceObj: RecordedPrice = {
+    date: Date.now(),
+    prices: {}
+  }
+
+  for (let scrapedPricePromise of scrapedPricePromises) {
+    if (scrapedPricePromise.status === 'rejected') continue
+    if (!scrapedPricePromise.value) continue
+    if (scrapedPricePromise.value.price < 0) continue
+    priceObj.prices[scrapedPricePromise.value.location] = scrapedPricePromise.value.price
+  }
+  return priceObj
+}
+
+export async function scrapePricesAndAddToDB(db: Low<Data>) {
+  const items = db.data?.items ?? []
+  await Promise.all(items.map(async item => {
+    const scrapedPricePromises = await createArrayOfScrapePromises(item)
+    const priceObj = createPriceObj(scrapedPricePromises)
+    item.recordedPrices.push(priceObj)
+  }))
+  await db.write()
 }
