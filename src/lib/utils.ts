@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import "dotenv/config"
 
 import { Low } from "lowdb/lib";
 import { Data } from "./db";

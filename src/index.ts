@@ -4,7 +4,6 @@ import { z } from 'zod'
 import { db } from './lib/db.js';
 import { scrapePrices } from './lib/utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
-import { val } from 'cheerio/lib/api/attributes';
 
 export const fastify = Fastify({
   logger: {
@@ -49,6 +48,7 @@ fastify.post('/item',async (request, reply) => {
 
   const validated = Item.safeParse(item)
   if (validated.success) {
+    // check if item exists already
     const validatedItem = {...validated.data, recordedPrices: [] }
     db.data?.items.push(validatedItem)
     db.write()
