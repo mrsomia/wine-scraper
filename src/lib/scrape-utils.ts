@@ -97,10 +97,10 @@ function createPriceObj(scrapedPricePromises: PromiseSettledResult<ScrapedPrice>
 
 export async function scrapePricesAndAddToDB(db: Low<Data>) {
   const items = db.data?.items ?? []
-  await Promise.all(items.map(async item => {
+  for (let item of items) {
     const scrapedPricePromises = await createArrayOfScrapePromises(item)
     const priceObj = createPriceObj(scrapedPricePromises)
     item.recordedPrices.push(priceObj)
-  }))
+  }
   await db.write()
 }
