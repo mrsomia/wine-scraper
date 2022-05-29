@@ -1,9 +1,10 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import schedule from 'node-schedule'
 import { z } from 'zod'
 import { db } from './lib/db.js';
 import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
+import { getLatestPrices } from './routes/item-prices.js';
 
 export const fastify = Fastify({
   logger: {
@@ -23,18 +24,9 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 })
 
 
-fastify.get('/item-prices', async (request, reply) => {
-  let response: any[] = []
-  const items = db.data?.items ?? []
-  for (let item of items) {
-    const { name, recordedPrices } = item;
-    let data = recordedPrices[recordedPrices.length - 1]
-    response.push({name, data})
-  }
-  reply.send(response)
-})
+fastify.get('/item-prices', getLatestPrices)
 
-fastify.post('/item',async (request, reply) => {
+fastify.post('/item',async (request: FastifyRequest, reply: FastifyReply) => {
   // inject db, this will allow mocking for testing
   const { body: item } = request
   let Item = z.object({
@@ -66,7 +58,7 @@ fastify.post('/item',async (request, reply) => {
   }
 })
 
-fastify.listen(8080,function (err, address) {
+fastify.listen(8080, "127.0.0.1", function (err, address) {
   if (err) {
     fastify.log.error(err)
     process.exit(1)
