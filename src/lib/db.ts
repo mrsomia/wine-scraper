@@ -31,4 +31,3 @@ const db = new Low(adapter)
 await db.read()
 
 export { db }
-export const items = db.data?.items ?? []

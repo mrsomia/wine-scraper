@@ -22,10 +22,10 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
   }
 })
 
-const items = db.data?.items ?? []
 
 fastify.get('/item-prices', async (request, reply) => {
   let response: any[] = []
+  const items = db.data?.items ?? []
   for (let item of items) {
     const { name, recordedPrices } = item;
     let data = recordedPrices[recordedPrices.length - 1]
