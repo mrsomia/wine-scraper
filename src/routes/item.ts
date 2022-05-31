@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
-import { db } from '../lib/db.js'
+import { db, prisma } from '../lib/db.js'
 
 export async function addNewItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   // inject db, this will allow mocking for testing
@@ -18,10 +18,34 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
   if (validated.success) {
     // check if item exists already
     const validatedItem = {...validated.data, recordedPrices: [] }
-    db.data?.items.push(validatedItem)
-    db.write()
+    
+    // need to add
+    const item  = await prisma.item.create({
+      data : {
+        name: validatedItem.name,
+        urls: {
+          create: {
+            tesco: validatedItem.URLs?.tesco,
+            supervalu: validatedItem.URLs?.supervalu,
+            dunnes: validatedItem.URLs?.dunnes
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        urls: {
+          select: {
+            tesco: true,
+            supervalu: true,
+            dunnes: true
+          }
+        }
+      }
+    })
+
     reply.send({
-      item: validatedItem,
+      item,
       message: 'Success',
     })
   } else {

@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client'
 import { Low, JSONFile } from 'lowdb'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -20,6 +21,8 @@ export interface RecordedPrice {
 export interface Data {
   items: Item[],
 }
+
+export const prisma = new PrismaClient()
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

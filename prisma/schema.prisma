@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id     String        @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  urls   Urls          @relation(fields: [urlsId], references: [id])
+  urlsId String        @unique @db.ObjectId
+  prices PriceRecord[]
+}
+
+model Urls {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  tesco     String?
+  dunnes    String?
+  supervalu String?
+  Item      Item?
+}
+
+model PriceRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateTime  DateTime
+  tesco     Float?
+  dunnes    Float?
+  supervalu Float?
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    String   @db.ObjectId
+}
+
+// model User {
+//   id   String @id @default(auto()) @map("_id") @db.ObjectId
+//   items Item[] @relation(fields: [itemIds], references: [id])
+//   itemIds String[]
+// }

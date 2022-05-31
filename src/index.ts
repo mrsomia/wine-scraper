@@ -27,10 +27,9 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 fastify.get('/item-prices', getLatestPrices)
 fastify.post('/item', addNewItem)
 
-fastify.listen(8080, "127.0.0.1", function (err, address) {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-  console.log(`Server is now listening on ${address}`)
-})
+fastify.listen(8080, "127.0.0.1")
+  .then(address => console.log(`Server is now listening on ${address}`))
+  .catch(err => {
+  console.log('Error starting server:', err)
+  process.exit(1)
+  })
