@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
-import { db, prisma } from '../lib/dao.js'
+import { createItem } from '../lib/dao.js'
 
 export async function addNewItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   // inject db, this will allow mocking for testing
@@ -20,29 +20,7 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
     const validatedItem = {...validated.data, recordedPrices: [] }
     
     // need to add validate that the item does not exist
-    const item  = await prisma.item.create({
-      data : {
-        name: validatedItem.name,
-        urls: {
-          create: {
-            tesco: validatedItem.URLs?.tesco,
-            supervalu: validatedItem.URLs?.supervalu,
-            dunnes: validatedItem.URLs?.dunnes
-          }
-        }
-      },
-      select: {
-        id: true,
-        name: true,
-        urls: {
-          select: {
-            tesco: true,
-            supervalu: true,
-            dunnes: true
-          }
-        }
-      }
-    })
+    const item  = await createItem(validatedItem)
 
     reply.send({
       item,

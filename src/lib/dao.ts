@@ -24,6 +24,43 @@ export interface Data {
 // kept in a different file so that it can be imported into routes
 export const prisma = new PrismaClient()
 
+export async function createItem(item: Item) {
+  const createdItem  = await prisma.item.create({
+    data : {
+      name: item.name,
+      urls: {
+        create: {
+          tesco: item.URLs?.tesco,
+          supervalu: item.URLs?.supervalu,
+          dunnes: item.URLs?.dunnes
+        }
+      }
+    },
+    select: {
+      id: true,
+      name: true,
+      urls: {
+        select: {
+          tesco: true,
+          supervalu: true,
+          dunnes: true
+        }
+      }
+    }
+  })
+  return createdItem
+}
+
+export async function getAllItemsWithPrices(){
+  const items = await prisma.item.findMany({
+    include: {
+      prices: true
+      }
+    })
+  return items
+}
+
+// To Remove
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Use JSON file for storage
