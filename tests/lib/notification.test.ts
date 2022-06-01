@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { Low } from 'lowdb/lib';
-import { Data } from '../../src/lib/db';
+import { Data } from '../../src/lib/dao.js';
 import { makeMessageArray, pingDetails, MessageObject, PUSHOVER_URL } from '../../src/lib/notification'
 import axios from 'axios'
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import "dotenv/config"
 
 import { Low } from "lowdb/lib";
-import { Data, Item, RecordedPrice } from "./db";
+import { Data, Item, RecordedPrice } from "./dao.js";
 
 export const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 

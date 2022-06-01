@@ -1,5 +1,5 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import { db } from "../lib/db.js"
+import { db } from "../lib/dao.js"
 
 export async function getLatestPrices(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   let response: any[] = []

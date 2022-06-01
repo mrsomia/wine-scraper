@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
-import { db, prisma } from '../lib/db.js'
+import { db, prisma } from '../lib/dao.js'
 
 export async function addNewItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   // inject db, this will allow mocking for testing

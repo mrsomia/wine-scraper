@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { z } from 'zod'
 import { Low } from "lowdb/lib";
-import { Data, Item, RecordedPrice } from "./db";
+import { Data, Item, RecordedPrice } from "./dao.js";
 
 
 export async function getHTML(url:string) {
