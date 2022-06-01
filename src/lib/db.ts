@@ -21,7 +21,7 @@ export interface RecordedPrice {
 export interface Data {
   items: Item[],
 }
-
+// kept in a different file so that it can be imported into routes
 export const prisma = new PrismaClient()
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

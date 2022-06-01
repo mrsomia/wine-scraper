@@ -6,20 +6,20 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file: ./dev.db"
 }
 
 model Item {
-  id     String        @id @default(auto()) @map("_id") @db.ObjectId
+  id     Int           @id @default(autoincrement())
   name   String
   urls   Urls          @relation(fields: [urlsId], references: [id])
-  urlsId String        @unique @db.ObjectId
+  urlsId Int           @unique
   prices PriceRecord[]
 }
 
 model Urls {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int     @id @default(autoincrement())
   tesco     String?
   dunnes    String?
   supervalu String?
@@ -27,13 +27,13 @@ model Urls {
 }
 
 model PriceRecord {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        Int      @id @default(autoincrement())
   dateTime  DateTime
   tesco     Float?
   dunnes    Float?
   supervalu Float?
   item      Item     @relation(fields: [itemId], references: [id])
-  itemId    String   @db.ObjectId
+  itemId    Int
 }
 
 // model User {

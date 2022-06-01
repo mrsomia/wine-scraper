@@ -19,7 +19,7 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
     // check if item exists already
     const validatedItem = {...validated.data, recordedPrices: [] }
     
-    // need to add
+    // need to add validate that the item does not exist
     const item  = await prisma.item.create({
       data : {
         name: validatedItem.name,
