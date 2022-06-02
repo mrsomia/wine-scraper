@@ -54,7 +54,11 @@ export async function createItem(item: Item) {
 export async function getAllItemsWithPrices(){
   const items = await prisma.item.findMany({
     include: {
-      prices: true
+      prices: {
+        orderBy: {
+          dateTime: 'asc' // This needs testing to check the last item is the latest
+        }
+      }
       }
     })
   return items

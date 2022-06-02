@@ -1,39 +1,25 @@
-import { describe, it, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { fastify } from "../src/index";
 
 describe('/item-prices route', () => {
-  it('Retrieves prices', async ()=> {
-    const expected = [{
-      name: '19 Crimes, The Banished Dark Red Wine',
-      data: {
-        date: 1649634241029,
-        "prices": {
-          "tesco": 10,
-          "dunnes": 9
-        }
+  test('Retrieves prices as expected', async ()=> {
+    const expected = [
+      {
+        "name": "Jameson 70cl",
+        "prices": []
       }
-    },
-    {
-    name: '19 Crimes, Red Wine',
-    data:{
-      "date": 1649634241980,
-      "prices": {
-        "tesco": 10,
-        "dunnes": 9,
-        "supervalu": 15.5
-        }
-      }
-    },
-    {
-      "name": "Jack Daniel's 70cl"
-    }
     ]
 
-    const respone = await fastify.inject({
+    const response = await fastify.inject({
       method: 'GET',
       url: '/item-prices'
     })
-    expect(respone.statusCode).toBe(200)
-    expect(JSON.parse(respone.body)).toEqual(expected)
+
+    const responeValue = JSON.parse(response.body)
+
+    expect(response.statusCode).toBe(200)
+    expect(responeValue).toMatchObject(expected)
+    expect(responeValue[0]).toHaveProperty("id")
+    expect(responeValue[0]).toHaveProperty("urlsId")
   })
 })
