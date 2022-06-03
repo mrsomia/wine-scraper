@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { fastify } from "../src/index";
+import { fastify } from "../../src/index";
 
 describe('/item-prices route', () => {
   test('Retrieves prices as expected', async ()=> {
