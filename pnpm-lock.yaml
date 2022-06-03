@@ -14,8 +14,8 @@ specifiers:
   node-schedule: ^2.1.0
   nodemon: ^2.0.16
   prisma: ^3.14.0
-  typescript: ^4.7.2
-  vitest: '0.13'
+  typescript: ^4.7.3
+  vitest: ~0.13.1
   zod: ^3.17.3
 
 dependencies:
@@ -28,11 +28,11 @@ dependencies:
   lowdb: 3.0.0
   node-schedule: 2.1.0
   prisma: 3.14.0
-  typescript: 4.7.2
+  typescript: 4.7.3
   zod: 3.17.3
 
 devDependencies:
-  '@types/node': 17.0.38
+  '@types/node': 17.0.39
   '@types/node-schedule': 1.3.2
   c8: 7.11.3
   nodemon: 2.0.16
@@ -47,12 +47,12 @@ packages:
   /@esbuild-kit/cjs-loader/2.0.1:
     resolution: {integrity: sha512-KmE8XouKm6m05jPIsf5CTIZZ4171GHd+PUts1mtti2tzoiD228qCRjpkCwg540c3fMUweKupO+PIpkJ9+Z7vPg==}
     dependencies:
-      '@esbuild-kit/core-utils': 1.2.1
+      '@esbuild-kit/core-utils': 1.3.0
       get-tsconfig: 3.0.1
     dev: false
 
-  /@esbuild-kit/core-utils/1.2.1:
-    resolution: {integrity: sha512-zNtrwZ/754OMs6joIQIxsdOA3rjhde7Vt/IzkgNnCcQrwUDG5iHmlv9vhlHzyg+BZ6Cp519lrkMKlTCEW00Kpw==}
+  /@esbuild-kit/core-utils/1.3.0:
+    resolution: {integrity: sha512-c3N86nZAgU7soEbSCyLGVVf+9iz5fWw4ujK6e8KSDN3PuVFD6G9JVyLsNWvNoWLmNANb0YKxuhqdOLM4kAK66w==}
     dependencies:
       esbuild: 0.14.38
     dev: false
@@ -60,7 +60,7 @@ packages:
   /@esbuild-kit/esm-loader/2.1.4:
     resolution: {integrity: sha512-acfzciUGugu1TV1QHJOAOe6F5miEjQLDYMWhoD4mVPFmwHA8Iwp5UCJidyruj67qp2ybu+Zc++7+th9VnYaZMA==}
     dependencies:
-      '@esbuild-kit/core-utils': 1.2.1
+      '@esbuild-kit/core-utils': 1.3.0
       es-module-lexer: 0.10.5
       get-tsconfig: 3.0.1
     dev: false
@@ -148,23 +148,23 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 17.0.38
+      '@types/node': 17.0.39
     dev: true
 
   /@types/node-schedule/1.3.2:
     resolution: {integrity: sha512-Y0CqdAr+lCpArT8CJJjJq4U2v8Bb5e7ru2nV/NhDdaptCMCRdOL3Y7tAhen39HluQMaIKWvPbDuiFBUQpg7Srw==}
     dependencies:
-      '@types/node': 17.0.38
+      '@types/node': 17.0.39
     dev: true
 
-  /@types/node/17.0.38:
-    resolution: {integrity: sha512-5jY9RhV7c0Z4Jy09G+NIDTsCZ5G0L5n+Z+p+Y7t5VJHM30bgwzSjVtlcBxqAj+6L/swIlvtOSzr8rBk/aNyV2g==}
+  /@types/node/17.0.39:
+    resolution: {integrity: sha512-JDU3YLlnPK3WDao6/DlXLOgSNpG13ct+CwIO17V8q0/9fWJyeMJJ/VyZ1lv8kDprihvZMydzVwf0tQOqGiY2Nw==}
     dev: true
 
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 17.0.38
+      '@types/node': 17.0.39
     dev: true
 
   /abbrev/1.1.1:
@@ -1630,7 +1630,7 @@ packages:
     dev: false
 
   /once/1.4.0:
-    resolution: {integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E=}
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
     dev: true
@@ -1683,7 +1683,7 @@ packages:
     dev: true
 
   /path-is-absolute/1.0.1:
-    resolution: {integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18=}
+    resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -1736,7 +1736,7 @@ packages:
     dev: true
 
   /prepend-http/2.0.0:
-    resolution: {integrity: sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=}
+    resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
     dev: true
 
@@ -1869,8 +1869,8 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rollup/2.75.4:
-    resolution: {integrity: sha512-JgZiJMJkKImMZJ8ZY1zU80Z2bA/TvrL/7D9qcBCrfl2bP+HUaIw0QHUroB4E3gBpFl6CRFM1YxGbuYGtdAswbQ==}
+  /rollup/2.75.5:
+    resolution: {integrity: sha512-JzNlJZDison3o2mOxVmb44Oz7t74EfSd1SQrplQk0wSaXV7uLQXtVdHbxlcT3w+8tZ1TL4r/eLfc7nAbz38BBA==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
@@ -2056,7 +2056,7 @@ packages:
     hasBin: true
     dependencies:
       '@esbuild-kit/cjs-loader': 2.0.1
-      '@esbuild-kit/core-utils': 1.2.1
+      '@esbuild-kit/core-utils': 1.3.0
       '@esbuild-kit/esm-loader': 2.1.4
     optionalDependencies:
       fsevents: 2.3.2
@@ -2078,8 +2078,8 @@ packages:
       is-typedarray: 1.0.0
     dev: true
 
-  /typescript/4.7.2:
-    resolution: {integrity: sha512-Mamb1iX2FDUpcTRzltPxgWMKy3fhg0TN378ylbktPGPK/99KbDtMQ4W1hwgsbPAsG3a0xKa1vmw4VKZQbkvz5A==}
+  /typescript/4.7.3:
+    resolution: {integrity: sha512-WOkT3XYvrpXx4vMMqlD+8R8R37fZkjyLGlxavMc4iB8lrl8L0DeTcHbYgw/v0N/z9wAFsgBhcsF0ruoySS22mA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: false
@@ -2156,7 +2156,7 @@ packages:
       esbuild: 0.14.42
       postcss: 8.4.14
       resolve: 1.22.0
-      rollup: 2.75.4
+      rollup: 2.75.5
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

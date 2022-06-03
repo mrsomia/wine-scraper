@@ -15,7 +15,7 @@ describe('/item-prices route', () => {
       url: '/item-prices'
     })
 
-    const responeValue = JSON.parse(response.body)
+    const responeValue = response.json()
 
     expect(response.statusCode).toBe(200)
     expect(responeValue).toMatchObject(expected)
