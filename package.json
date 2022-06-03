@@ -23,7 +23,7 @@
     "start": "esno ./src/index.ts",
     "dev": "nodemon --exec esno ./src/index.ts --ignore ./src/lib/db.json",
     "test": "vitest",
-    "coverage": "vitest --coverage",
+    "cov": "vitest --coverage",
     "setup": "npm i; mkdir logs; touch .env ./logs/logs.txt"
   },
   "name": "wine-scraper",

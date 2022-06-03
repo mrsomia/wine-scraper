@@ -16,11 +16,9 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
 
   const validated = Item.safeParse(item)
   if (validated.success) {
-    // check if item exists already
-    const validatedItem = {...validated.data, recordedPrices: [] }
+    // TODO: check if item exists already
     
-    // need to add validate that the item does not exist
-    const item  = await createItem(validatedItem)
+    const item  = await createItem(validated.data)
 
     reply.send({
       item,

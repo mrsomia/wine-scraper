@@ -24,7 +24,7 @@ export interface Data {
 // kept in a different file so that it can be imported into routes
 export const prisma = new PrismaClient()
 
-export async function createItem(item: Item) {
+export async function createItem(item: Omit<Item, "recordedPrices">) {
   const createdItem  = await prisma.item.create({
     data : {
       name: item.name,
