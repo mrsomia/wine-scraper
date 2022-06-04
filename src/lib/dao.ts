@@ -51,16 +51,29 @@ export async function createItem(item: Omit<Item, "recordedPrices">) {
   return createdItem
 }
 
+export async function updateDBItem(item: {id: number, name: string}) {
+  const updatedItem = await prisma.item.update({
+    where: {
+      id: item.id
+    },
+    data: {
+      name: item.name
+    }
+  })
+  return updatedItem
+}
+
 export async function getAllItemsWithPrices(){
   const items = await prisma.item.findMany({
     include: {
       prices: {
         orderBy: {
           dateTime: 'asc' // This needs testing to check the last item is the latest
-        }
+        },
+        take: -1
       }
-      }
-    })
+    }
+  })
   return items
 }
 

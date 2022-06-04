@@ -4,7 +4,7 @@ import { db } from './lib/dao.js';
 import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
 import { getLatestPrices } from './routes/item-prices.js';
-import { addNewItem } from './routes/item.js';
+import { addNewItem , updateItem} from './routes/item.js';
 
 export const fastify = Fastify({
   logger: {
@@ -26,6 +26,7 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 
 fastify.get('/item-prices', getLatestPrices)
 fastify.post('/item', addNewItem)
+fastify.put('/item', updateItem)
 
 fastify.listen(8080, "127.0.0.1")
   .then(address => console.log(`Server is now listening on ${address}`))

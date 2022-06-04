@@ -5,9 +5,18 @@ describe('/item-prices route', () => {
   test('Retrieves prices as expected', async ()=> {
     const expected = [
       {
-        "name": "Jameson 70cl",
-        "prices": []
-      }
+        name: "Jameson 70cl",
+        prices: []
+      },
+      {
+        name: "19 Crimes Dark Red Wine",
+        prices: []
+      },
+      {
+        name: "19 Crimes Red Wine",
+        prices: []
+      },
+      
     ]
 
     const response = await fastify.inject({

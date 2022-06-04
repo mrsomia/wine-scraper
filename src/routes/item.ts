@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
-import { createItem } from '../lib/dao.js'
+import { createItem, updateDBItem } from '../lib/dao.js'
 
 export async function addNewItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   // inject db, this will allow mocking for testing
@@ -31,5 +31,31 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
       message: 'Error',
       error: error.issues
     })
+  }
+}
+
+export async function updateItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
+  const { body: item } = request
+  let updatedItem = z.object({
+    id: z.number(),
+    name: z.string()
+  })
+
+  const validatedItemUpdate =  updatedItem.safeParse(item)
+
+  if (validatedItemUpdate.success) { 
+    const x = await updateDBItem(validatedItemUpdate.data)
+    
+    reply.send({
+      item,
+      message: 'Success'
+    })
+  } else {
+    const { error } = validatedItemUpdate
+    reply.code(400)
+      .send({
+        message: "Error",
+        error: error.issues
+      })
   }
 }
