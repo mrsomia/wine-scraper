@@ -5,15 +5,18 @@ describe('/item-prices route', () => {
   test('Retrieves prices as expected', async ()=> {
     const expected = [
       {
+        id: 1,
         name: "Jameson 70cl",
         prices: []
       },
       {
-        name: "19 Crimes Dark Red Wine",
+        id: 2,
+        name: "19 Crimes Red Wine",
         prices: []
       },
       {
-        name: "19 Crimes Red Wine",
+        id: 3,
+        name: "19 Crimes Dark Red Wine",
         prices: []
       },
       
