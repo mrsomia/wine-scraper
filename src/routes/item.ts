@@ -7,7 +7,7 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
   const { body: item } = request
   let Item = z.object({
     name: z.string(),
-    URLs: z.object({
+    urls: z.object({
       tesco: z.string(),
       dunnes: z.string(),
       supervalu: z.string()
@@ -16,9 +16,8 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
 
   const validated = Item.safeParse(item)
   if (validated.success) {
+    const item  = await createItem(validated.data.name, validated.data.urls)
     // TODO: check if item exists already
-    
-    const item  = await createItem(validated.data)
 
     reply.send({
       item,

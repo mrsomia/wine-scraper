@@ -1,38 +1,17 @@
-import { PrismaClient } from '@prisma/client'
-import { Low, JSONFile } from 'lowdb'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { PriceRecord, PrismaClient, Urls } from '@prisma/client'
 
-export interface Item {
-  name: string,
-  URLs: {
-    [location: string]: string
-  },
-  recordedPrices: RecordedPrice[]
-}
-
-export interface RecordedPrice {
-  date: number,
-  prices: {
-    [location: string]: number
-  }
-}
-
-export interface Data {
-  items: Item[],
-}
 // kept in a different file so that it can be imported into routes
 export const prisma = new PrismaClient()
 
-export async function createItem(item: Omit<Item, "recordedPrices">) {
+export async function createItem(name: string, urls : Partial<Urls>) {
   const createdItem  = await prisma.item.create({
     data : {
-      name: item.name,
+      name: name,
       urls: {
         create: {
-          tesco: item.URLs?.tesco,
-          supervalu: item.URLs?.supervalu,
-          dunnes: item.URLs?.dunnes
+          tesco: urls?.tesco,
+          supervalu: urls?.supervalu,
+          dunnes: urls?.dunnes
         }
       }
     },
@@ -83,16 +62,13 @@ export async function getAllItemsAndUrls() {
       urls: true
     }
   })
+  return items
 }
 
-// To Remove
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Use JSON file for storage
-const file = join(__dirname, 'db.json')
-
-const adapter = new JSONFile<Data>(file)
-const db = new Low(adapter)
-await db.read()
-
-export { db }
+export async function addNewPrice(priceObj: Omit<PriceRecord, "id">) {
+  const priceRecord = await prisma.priceRecord.create({
+    data: priceObj
+  })
+  console.log('created: ', {priceRecord})
+  return priceRecord
+}

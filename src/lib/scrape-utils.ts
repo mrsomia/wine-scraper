@@ -1,9 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { z } from 'zod'
-import { Low } from "lowdb/lib";
-import { Data, Item, RecordedPrice } from "./dao.js";
-
+import { addNewPrice, getAllItemsAndUrls } from "./dao.js";
+import { Item, PriceRecord, Urls } from "@prisma/client";
 
 export async function getHTML(url:string) {
   const {data} = await axios.get(url)
@@ -66,14 +65,14 @@ const scrapeFunctions = {
   supervalu: getSuperValuPrice
 }
 
-async function createArrayOfScrapePromises(item: Item): Promise<PromiseSettledResult<ScrapedPrice>[]> {
+async function createArrayOfScrapePromises(item: (Item & {urls: Urls})  ): Promise<PromiseSettledResult<ScrapedPrice>[]> {
   let scrapePromises: Promise<ScrapedPrice>[] = [];
 
-  for (let itemurl of Object.entries(item.URLs)) {
+  for (let itemurl of Object.entries(item.urls)) {
     let [prop, url] = itemurl
     if (prop === "tesco" || prop === "dunnes" || prop === "supervalu" ) {
       let func = scrapeFunctions[prop]
-      scrapePromises.push(func(url))
+      if (typeof url === 'string') scrapePromises.push(func(url))
     }
   }
   const scrapedPricePromises = await Promise.allSettled(scrapePromises)
@@ -81,26 +80,26 @@ async function createArrayOfScrapePromises(item: Item): Promise<PromiseSettledRe
 }
 
 function createPriceObj(scrapedPricePromises: PromiseSettledResult<ScrapedPrice>[]) {
-  const priceObj: RecordedPrice = {
-    date: Date.now(),
-    prices: {}
+  const priceObj: Partial<PriceRecord> = {
+    dateTime: new Date(),
   }
 
   for (let scrapedPricePromise of scrapedPricePromises) {
     if (scrapedPricePromise.status === 'rejected') continue
     if (!scrapedPricePromise.value) continue
     if (scrapedPricePromise.value.price < 0) continue
-    priceObj.prices[scrapedPricePromise.value.location] = scrapedPricePromise.value.price
+    priceObj[scrapedPricePromise.value.location] = scrapedPricePromise.value.price
   }
   return priceObj
 }
 
-export async function scrapePricesAndAddToDB(db: Low<Data>) {
-  const items = db.data?.items ?? []
+export async function scrapePricesAndAddToDB() {
+  const items = await getAllItemsAndUrls()
   await Promise.all(items.map(async item => {
     const scrapedPricePromises = await createArrayOfScrapePromises(item)
     const priceObj = createPriceObj(scrapedPricePromises)
-    item.recordedPrices.push(priceObj)
+    priceObj.itemId = item.id
+
+    addNewPrice(priceObj as PriceRecord) 
   }))
-  await db.write()
 }
