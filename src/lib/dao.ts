@@ -63,7 +63,7 @@ export async function updateDBItem(item: {id: number, name: string}) {
   return updatedItem
 }
 
-export async function getAllItemsWithPrices(){
+export async function getLatestItemPrices(){
   const items = await prisma.item.findMany({
     include: {
       prices: {
@@ -75,6 +75,14 @@ export async function getAllItemsWithPrices(){
     }
   })
   return items
+}
+
+export async function getAllItemsAndUrls() {
+  const items = await prisma.item.findMany({
+    include: {
+      urls: true
+    }
+  })
 }
 
 // To Remove
