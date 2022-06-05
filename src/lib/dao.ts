@@ -42,14 +42,14 @@ export async function updateDBItem(item: {id: number, name: string}) {
   return updatedItem
 }
 
-export async function getLatestItemPrices(){
+export async function getLatestItemPrices(amount= 1){
   const items = await prisma.item.findMany({
     include: {
       prices: {
         orderBy: {
           dateTime: 'asc' // This needs testing to check the last item is the latest
         },
-        take: -1
+        take: -amount
       }
     }
   })
@@ -69,6 +69,5 @@ export async function addNewPrice(priceObj: Omit<PriceRecord, "id">) {
   const priceRecord = await prisma.priceRecord.create({
     data: priceObj
   })
-  console.log('created: ', {priceRecord})
   return priceRecord
 }

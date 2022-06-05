@@ -4,6 +4,7 @@ import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
 import { getLatestPrices } from './routes/item-prices.js';
 import { addNewItem , updateItem} from './routes/item.js';
+import { getLatestItemPrices } from './lib/dao.js';
 
 export const fastify = Fastify({
   logger: {
@@ -14,7 +15,8 @@ export const fastify = Fastify({
 
 const job = schedule.scheduleJob('0 14 * * *', async function(){
   await scrapePricesAndAddToDB()
-  let messageArr = makeMessageArray(db)
+  const items = await getLatestItemPrices(2)
+  let messageArr = await makeMessageArray(items)
   try {
     pingDetails(messageArr)
   } catch (err) {
