@@ -32,5 +32,8 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "type": "module"
 }
