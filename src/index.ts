@@ -1,4 +1,4 @@
-import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
+import Fastify from 'fastify';
 import schedule from 'node-schedule'
 import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'

@@ -87,10 +87,20 @@ function createPriceObj(scrapedPricePromises: PromiseSettledResult<ScrapedPrice>
   for (let scrapedPricePromise of scrapedPricePromises) {
     if (scrapedPricePromise.status === 'rejected') continue
     if (!scrapedPricePromise.value) continue
-    if (scrapedPricePromise.value.price < 0) continue
+    if (scrapedPricePromise.value.price < 0) priceObj[scrapedPricePromise.value.location] = null 
     priceObj[scrapedPricePromise.value.location] = scrapedPricePromise.value.price
   }
   return priceObj
+}
+
+function isNewPriceRecord(priceObj: any): priceObj is Omit<PriceRecord, "id"> {
+  // Does not check type correctly, just that the one of the locations is present and not all
+  // Prisma type has all location with optionals as null (from the DB)
+  return ('dateTime' in priceObj && 
+  ('supervalu' in priceObj || 
+  'tesco' in priceObj || 
+  'dunnes' in priceObj )&& 
+  'itemId' in priceObj)
 }
 
 export async function scrapePricesAndAddToDB() {
@@ -99,7 +109,9 @@ export async function scrapePricesAndAddToDB() {
     const scrapedPricePromises = await createArrayOfScrapePromises(item)
     const priceObj = createPriceObj(scrapedPricePromises)
     priceObj.itemId = item.id
-
-    addNewPrice(priceObj as PriceRecord) 
+    if(isNewPriceRecord(priceObj)) {
+      console.log("adding", {priceObj})
+      addNewPrice(priceObj) 
+    }
   }))
 }

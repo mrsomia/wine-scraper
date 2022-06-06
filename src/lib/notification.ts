@@ -64,10 +64,11 @@ function getMin(priceObj: PriceRecord) {
 
   for (const shop in priceObj) {
     if (!(shop == 'tesco' || shop == 'dunnes' || shop == 'supervalu')) continue
-    if (priceObj[shop] === null) continue
-    let p = priceObj[shop] as number
-    if (p < min.price || !min.shop) {
-      min = { shop, price: p}
+    let p = priceObj[shop]
+    if (p !== null) {
+      if (p < min.price || !min.shop) {
+        min = { shop, price: p}
+      }
     }
   }
   return min
