@@ -46,7 +46,7 @@ function makeMessageObject(item: (Item & {prices: PriceRecord[]})): MessageObjec
   }
 }
 
-export async function makeMessageArray(items: (Item & {prices: PriceRecord[]})[]) {
+export function makeMessageArray(items: (Item & {prices: PriceRecord[]})[]) {
   let toPing: MessageObject[] = []
   for (let item of items) {
     if (item.prices.length < 1) continue

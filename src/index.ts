@@ -16,7 +16,7 @@ export const fastify = Fastify({
 const job = schedule.scheduleJob('0 14 * * *', async function(){
   await scrapePricesAndAddToDB()
   const items = await getLatestItemPrices(2)
-  let messageArr = await makeMessageArray(items)
+  let messageArr = makeMessageArray(items)
   try {
     pingDetails(messageArr)
   } catch (err) {

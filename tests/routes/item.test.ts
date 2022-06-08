@@ -15,7 +15,7 @@ describe("Tests add new item route", () => {
 
   const payload = {
     name: "Jameson 70cl",
-    URLs: {
+    urls: {
       tesco: "https://www.tesco.ie/groceries/en-IE/products/256409920",
       dunnes:
         "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/jameson-triple-distilled-irish-whiskey-700ml-100671200",
@@ -32,14 +32,14 @@ describe("Tests add new item route", () => {
     });
 
     expect(createItem).toBeCalledTimes(1);
-    expect(createItem).toBeCalledWith(payload);
+    expect(createItem).toBeCalledWith(payload.name, payload.urls);
     expect(JSON.parse(response.body)).toMatchObject({message: "Success"})
   });
 
   test("it should fail with incorrect input", async ()=> {
     const payload = {
       item: "Jameson 70cl",
-      URLs: {
+      urls: {
         tesco: "https://www.tesco.ie/groceries/en-IE/products/256409920",
         dunnes:
           "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/jameson-triple-distilled-irish-whiskey-700ml-100671200",
