@@ -20,11 +20,11 @@
     "vitest": "~0.13.1"
   },
   "scripts": {
-    "start": "esno ./src/index.ts",
+    "start": "node ./dist/index.js",
     "dev": "nodemon --exec esno ./src/index.ts --ignore ./src/lib/db.json",
     "test": "vitest --watch",
     "cov": "vitest --coverage",
-    "setup": "npm i; mkdir logs; touch .env ./logs/logs.txt"
+    "setup": "pnpm i; mkdir logs; touch .env ./logs/logs.txt; tsc; prisma migrate deploy"
   },
   "name": "wine-scraper",
   "version": "1.0.0",

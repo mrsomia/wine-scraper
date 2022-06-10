@@ -1,47 +1,19 @@
 # Wine Scraper
 
-A web scraper designed to pull prices from various Irish SuperMarkets and notify my when there is a price drop in an item I am tracking
+A web scraper designed to pull prices from various Irish SuperMarkets and notify my when there is a price drop in an item I am tracking. For how to set this up, you can see the [setup.md](./setup.md) file
 
-## Setup/installation
+## How its Made
 
-To configure clone the repo then run the following to install all the npm packages required and set up the folder structure:
+Tech used: Typescript, Prisma, Fasftify, SQLite
 
-```
-npm run setup
-```
+I built this to learn Prisma, Typescript and to experiment with new libraries like Fastify. I added Pushover to use it to notify me directly when a price changes so I did not have to persistently check it and add libraries, like zod, for data validation.
 
-Edit the new .env file with your pushover keys, in this format:
+I wrote webscrapers in cheerio for each of the supermarkets, I then used node schedule to run this at the same time each day.
 
-```
-PUSHOVER_APP_KEY=y87fd6g6tb7tb78s6b87ygb7d8by87
-PUSHOVER_USER_KEY=vf8sv7f8vdf87vb98sdf7b97fb97b8
-```
+## Optimizations
 
-These are not real keys.
+If I had a more time I would like to add User authentication and even the use of JWTs for session management. I intend to add a frontend with nextjs. I would also like to add web notificatins to this so that I can have the browser notify me too.
 
-## Running the server
+## Lessons Learned:
 
-After this you can start the server when required, using:
-
-```
-npm start
-```
-
-If you are running this remotely and wish to leave it running, you can enter CTRL-Z to suspend the process, followed by the `bg` command, to let it run in the background. Finally if you are using SSH you can run `disown -h` to ensure it runs when you are logged out
-
-## Adding new items
-
-To track new items, simply add an object in the `lib/db.json` file, to the items array with the below format and restart the server
-
-```
-{
-  "name": "19 Crimes, The Banished Dark Red Wine",
-  "URLs": {
-    "tesco": "https://www.tesco.ie/groceries/en-IE/products/299531340",
-    "dunnes": "https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/19-crimes-red-wine-750ml-100873366",
-    "supervalu": "https://shop.supervalu.ie/shopping/product/1531948000"
-  },
-  "recordedPrices": [
-  ]
-}
-```
+Migrating database code and types that are coupled with your code can be really hard. I intitally used just a json file as the db and migrating to prisma and using an ORM made it easier to switch databases. I also used this to implement a DAO style design so I can write easier functions for access and modifying the data. This would make it easier to migrate again if I change the Scheme or the ORM
