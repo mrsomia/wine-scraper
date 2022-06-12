@@ -1,8 +1,6 @@
+import { Item, PriceRecord } from "@prisma/client";
 import axios from "axios";
 import "dotenv/config"
-
-import { Low } from "lowdb/lib";
-import { Data, Item, RecordedPrice } from "./db";
 
 export const PUSHOVER_URL = "https://api.pushover.net/1/messages.json"
 
@@ -28,9 +26,9 @@ export async function pingDetails(toPing: MessageObject[]) {
   )
 }
 
-function makeMessageObject(item: Item): MessageObject | void {
-  const { name, recordedPrices } = item
-  let [ first, second ] = recordedPrices.slice(-2)
+function makeMessageObject(item: (Item & {prices: PriceRecord[]})): MessageObject | void {
+  const { name, prices } = item
+  let [ first, second ] = prices
   let fMin = getMin(first)
   let sMin
 
@@ -48,28 +46,29 @@ function makeMessageObject(item: Item): MessageObject | void {
   }
 }
 
-export function makeMessageArray(db: Low<Data>) {
-  const items = db.data?.items ?? [];
+export function makeMessageArray(items: (Item & {prices: PriceRecord[]})[]) {
   let toPing: MessageObject[] = []
   for (let item of items) {
-    if (item.recordedPrices.length < 1) continue
+    if (item.prices.length < 1) continue
     let notificationObj = makeMessageObject(item)
     if (notificationObj) toPing.push(notificationObj)
   }
   return toPing
 }
 
-function getMin(priceObj: RecordedPrice) {
-  const { prices } = priceObj
+function getMin(priceObj: PriceRecord) {
   let min = {
     shop: '',
     price: 0
   }
 
-  for (const shop in prices) {
-    if (!prices[shop]) continue
-    if (prices[shop] < min.price || !min.shop) {
-      min = { shop, price: prices[shop]}
+  for (const shop in priceObj) {
+    if (!(shop == 'tesco' || shop == 'dunnes' || shop == 'supervalu')) continue
+    let p = priceObj[shop]
+    if (p !== null) {
+      if (p < min.price || !min.shop) {
+        min = { shop, price: p}
+      }
     }
   }
   return min

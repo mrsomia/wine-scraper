@@ -1,13 +1,13 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
-import { db } from '../lib/db.js'
+import { createItem, updateDBItem } from '../lib/dao.js'
 
 export async function addNewItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
   // inject db, this will allow mocking for testing
   const { body: item } = request
   let Item = z.object({
     name: z.string(),
-    URLs: z.object({
+    urls: z.object({
       tesco: z.string(),
       dunnes: z.string(),
       supervalu: z.string()
@@ -16,12 +16,11 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
 
   const validated = Item.safeParse(item)
   if (validated.success) {
-    // check if item exists already
-    const validatedItem = {...validated.data, recordedPrices: [] }
-    db.data?.items.push(validatedItem)
-    db.write()
+    const item  = await createItem(validated.data.name, validated.data.urls)
+    // TODO: check if item exists already
+
     reply.send({
-      item: validatedItem,
+      item,
       message: 'Success',
     })
   } else {
@@ -31,5 +30,31 @@ export async function addNewItem(request: FastifyRequest, reply: FastifyReply): 
       message: 'Error',
       error: error.issues
     })
+  }
+}
+
+export async function updateItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
+  const { body: item } = request
+  let updatedItem = z.object({
+    id: z.number(),
+    name: z.string()
+  })
+
+  const validatedItemUpdate =  updatedItem.safeParse(item)
+
+  if (validatedItemUpdate.success) { 
+    const x = await updateDBItem(validatedItemUpdate.data)
+    
+    reply.send({
+      item,
+      message: 'Success'
+    })
+  } else {
+    const { error } = validatedItemUpdate
+    reply.code(400)
+      .send({
+        message: "Error",
+        error: error.issues
+      })
   }
 }

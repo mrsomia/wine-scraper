@@ -169,3 +169,6 @@ dist
 # macOS
 
 .DS_store
+
+# SQLite files in Prisma
+prisma/ .

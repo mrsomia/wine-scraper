@@ -1,10 +1,10 @@
-import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
+import Fastify from 'fastify';
 import schedule from 'node-schedule'
-import { db } from './lib/db.js';
 import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
 import { getLatestPrices } from './routes/item-prices.js';
-import { addNewItem } from './routes/item.js';
+import { addNewItem , updateItem} from './routes/item.js';
+import { getLatestItemPrices } from './lib/dao.js';
 
 export const fastify = Fastify({
   logger: {
@@ -14,8 +14,9 @@ export const fastify = Fastify({
 })
 
 const job = schedule.scheduleJob('0 14 * * *', async function(){
-  await scrapePricesAndAddToDB(db)
-  let messageArr = makeMessageArray(db)
+  await scrapePricesAndAddToDB()
+  const items = await getLatestItemPrices(2)
+  let messageArr = makeMessageArray(items)
   try {
     pingDetails(messageArr)
   } catch (err) {
@@ -26,11 +27,11 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 
 fastify.get('/item-prices', getLatestPrices)
 fastify.post('/item', addNewItem)
+fastify.put('/item', updateItem)
 
-fastify.listen(8080, "127.0.0.1", function (err, address) {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-  console.log(`Server is now listening on ${address}`)
-})
+fastify.listen(8080, "127.0.0.1")
+  .then(address => console.log(`Server is now listening on ${address}`))
+  .catch(err => {
+  console.log('Error starting server:', err)
+  process.exit(1)
+  })
