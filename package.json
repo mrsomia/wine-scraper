@@ -24,7 +24,8 @@
   "scripts": {
     "test": "pnpm -r test",
     "dev": "pnpm -r dev",
-    "dev:next": "cd next-app; pnpm run dev"
+    "dev:next": "cd next-app; pnpm run dev",
+    "dev:server": "cd server; pnpm run dev"
   },
   "repository": {
     "type": "git",
