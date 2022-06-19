@@ -72,7 +72,7 @@ export async function getAllOfItem(request: FastifyRequest, reply: FastifyReply)
 
     reply.send({
       item: itemPrices,
-      message: 'Succes'
+      message: 'Success'
     })
   } else {
     const { error } = validatedRequestedItem
