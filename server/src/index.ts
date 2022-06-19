@@ -3,7 +3,7 @@ import schedule from 'node-schedule'
 import { scrapePricesAndAddToDB } from './lib/scrape-utils.js';
 import { makeMessageArray, pingDetails } from './lib/notification.js'
 import { getLatestPrices } from './routes/item-prices.js';
-import { addNewItem , updateItem} from './routes/item.js';
+import { addNewItem , getAllOfItem, updateItem} from './routes/item.js';
 import { getLatestItemPrices } from './lib/dao.js';
 
 export const fastify = Fastify({
@@ -28,6 +28,7 @@ const job = schedule.scheduleJob('0 14 * * *', async function(){
 fastify.get('/item-prices', getLatestPrices)
 fastify.post('/item', addNewItem)
 fastify.put('/item', updateItem)
+fastify.post('/item/get-all-prices', getAllOfItem)
 
 fastify.listen(8080, "127.0.0.1")
   .then(address => console.log(`Server is now listening on ${address}`))
