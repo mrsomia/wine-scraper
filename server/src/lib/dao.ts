@@ -56,6 +56,22 @@ export async function getLatestItemPrices(amount= 1){
   return items
 }
 
+export async function getAllItemsPrices(id:number) {
+  const items = await prisma.item.findUnique({
+    where: {
+      id: id
+    },
+    include: {
+      prices: {
+        orderBy: {
+          dateTime: 'asc'
+        }
+      }
+    }
+  })
+  return items
+}
+
 export async function getAllItemsAndUrls() {
   const items = await prisma.item.findMany({
     include: {
