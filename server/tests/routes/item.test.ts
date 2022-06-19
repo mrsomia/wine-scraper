@@ -114,4 +114,20 @@ describe("tests get all price records of an item route", ()=> {
     expect(getAllItemsPrices).toBeCalled()
     expect(JSON.parse(response.body)).toEqual({message: "Success", item: {...expectedFromGetAllItems}})
   })
+
+  test("should return error with incorrect input", async () => {
+    const payload = {
+      id: '1'
+    }
+
+    const response = await fastify.inject({
+      method: "POST",
+      url: "/item/get-all-prices",
+      payload
+    })
+
+    expect(getAllItemsPrices).not.toBeCalled();
+    expect(response.json()).toMatchObject({ message: 'Error'})
+    expect(response.statusCode).toBe(400)
+  })
 })
