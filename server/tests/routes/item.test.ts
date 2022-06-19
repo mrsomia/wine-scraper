@@ -1,3 +1,4 @@
+import { after } from "cheerio/lib/api/manipulation";
 import { describe, expect, test, vi, afterEach } from "vitest";
 import { fastify } from "../../src/index";
 import { createItem, getAllItemsPrices } from "../../src/lib/dao";
@@ -92,6 +93,12 @@ describe("Tests add new item route", () => {
     expect(response.json()).toMatchObject({ message: "Error"})
     expect(response.statusCode).toBe(400)
   })
+});
+
+describe("tests get all price records of an item route", ()=> {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
 
   test("should get all item price records", async ()=> {
     const payload = {
@@ -107,4 +114,4 @@ describe("Tests add new item route", () => {
     expect(getAllItemsPrices).toBeCalled()
     expect(JSON.parse(response.body)).toEqual({message: "Success", item: {...expectedFromGetAllItems}})
   })
-});
+})
