@@ -172,4 +172,4 @@ dist
 .DS_store
 
 # SQLite files in Prisma
-prisma/ .
+server/prisma/ .
