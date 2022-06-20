@@ -4,27 +4,42 @@ export interface ItemProps {
   name: string;
   id: number;
   urlsId: number;
-  prices: [
-    {
-      dateTime: string;
-      id: number;
-      itemId: number;
-      supervalu: number | null;
-      tesco: number | null;
-      dunnes: number | null;
-    }
-  ];
+  prices: PriceRecord[];
 }
+
+export interface PriceRecord {
+  dateTime: string;
+  id: number;
+  itemId: number;
+  supervalu: number | null;
+  tesco: number | null;
+  dunnes: number | null;
+}
+
+
 export function Item(props: ItemProps): JSX.Element {
-  return (
+  const lastPrice = props.prices[0]
+  let min = null
+  for (const location of ['tesco', 'supervalu', 'dunnes']) {
+    if (!(location in lastPrice)) continue
+    let price = lastPrice[location]
+    if (price && !min) {
+      min = { location, price }
+    } else if (price && min) {
+      if (price < min.price) min = { location, price }
+    }
+  }
+
+  return min ? (
     <div className="item">
       <h3>{props.name}</h3>
-      <div>
-        <span>{"name of store"}</span>
-        <span>€ {9.6.toString()}</span>
+      <div className="flex">
+        <span>{min.location}</span>
+        <span> € {min.price.toString()}</span>
+        <span> as of {new Date(props.prices[0].dateTime).toLocaleDateString()}</span>
       </div>
     </div>
-  );
+  ) : <></>
 }
 
 export default Item
