@@ -20,8 +20,8 @@ export interface PriceRecord {
 export function Item(props: ItemProps): JSX.Element {
   const lastPrice = props.prices[0]
   let min = null
-  for (const location of ['tesco', 'supervalu', 'dunnes']) {
-    if (!(location in lastPrice)) continue
+  const locations = ['tesco', 'supervalu', 'dunnes'] as const
+  for (const location of locations) {
     let price = lastPrice[location]
     if (price && !min) {
       min = { location, price }
