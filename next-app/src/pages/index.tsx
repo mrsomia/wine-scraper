@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from 'react'
+import PriceHistoryChart from '../components/chart'
 // import styles from  "../styles/UserHome.module.css"
 import { ItemProps, Item } from '../components/Item'
 // import { initialState, stateReducer } from '../utils/context'
@@ -58,17 +59,20 @@ function UserHome(): JSX.Element {
 
   console.log(state)
 
-  return (<div className='p-3 flex justify-center align-center h-screen bg-gray-'>
-    <main>
-      <h1 className='font-sans font-bold text-3xl pt-3 pb-3'>Items</h1>
-      <div className='flex flex-col gap-4'>
-        { state.items ? state.items.map(item => (
-          <Item   {...item} key={item.id} />
-        ))
-        :
-        <></>
-        }
+  return (<div className='p-3 flex h-screen bg-gray-'>
+    <main className='grid grid-cols-2'>
+      <div>
+        <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
+        <div className='grid grid-cols-1 gap-5'>
+          { state.items ? state.items.map(item => (
+            <Item   {...item} key={item.id} />
+          ))
+          :
+          <></>
+          }
+        </div>
       </div>
+      {state.activeItem && <PriceHistoryChart activeItem={state.activeItem}/>}
     </main>
   </div>)
 }
