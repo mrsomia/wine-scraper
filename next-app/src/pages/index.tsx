@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import styles from  "../styles/UserHome.module.css"
+// import styles from  "../styles/UserHome.module.css"
 import { ItemProps, Item } from '../components/Item'
 // import { initialState, stateReducer } from '../utils/context'
 
@@ -27,7 +27,11 @@ export const initialState: InitialState = {
 export function stateReducer(state: typeof initialState, action: ACTIONTYPE) {
   switch(action.type) {
     case 'UPDATE-ITEMS':
-      return { ...state, items: action.payload }
+      if (!state.activeItem) {
+        return { ...state, items: action.payload, activeItem: action.payload[0]}
+      } else {
+        return {...state, items: action.payload}
+      }
     default:
       return state
       throw new Error("bad action type")
@@ -54,15 +58,17 @@ function UserHome(): JSX.Element {
 
   console.log(state)
 
-  return (<div className={styles['user-favourites']}>
+  return (<div className='p-3 flex justify-center align-center h-screen bg-gray-'>
     <main>
-      <h1>Items</h1>
-      { state.items ? state.items.map(item => (
-        <Item   {...item} key={item.id} />
-      ))
-       :
-      <></>
-      }
+      <h1 className='font-sans font-bold text-3xl pt-3 pb-3'>Items</h1>
+      <div className='flex flex-col gap-4'>
+        { state.items ? state.items.map(item => (
+          <Item   {...item} key={item.id} />
+        ))
+        :
+        <></>
+        }
+      </div>
     </main>
   </div>)
 }

@@ -31,9 +31,9 @@ export function Item(props: ItemProps): JSX.Element {
   }
 
   return min ? (
-    <div className="item">
-      <h3>{props.name}</h3>
-      <div className="flex">
+    <div className="item flex flex-col">
+      <h3 className="text-xl font-semibold">{props.name}</h3>
+      <div className="flex justify-evenly">
         <span>{min.location}</span>
         <span> € {min.price.toString()}</span>
         <span> as of {new Date(props.prices[0].dateTime).toLocaleDateString()}</span>
