@@ -20,16 +20,19 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
           'Accept': 'application/JSON'
         }
       }).then(res => res.json())
-      setPrices(response)
+      if (response.message === 'Success')
+      setPrices(response.item)
     }
     getPrices()
-  }, [])
+  }, [props.activeItem.id])
   
   console.log({prices})
   return prices ? (
-    <LineChart>
-      <Line type="monotone" dataKey="tesco" stroke="" />
-      <XAxis dataKey="date"/>
+    <LineChart height={400} width={600} data={prices.prices}>
+      <Line type="monotone" dataKey="tesco" stroke="#0284c7" />
+      <Line type="monotone" dataKey="dunnes" stroke="#0f172a" />
+      <Line type="monotone" dataKey="supervalu" stroke="#b82b35" />
+      <XAxis dataKey="dateTime"/>
       <YAxis />
       <Tooltip />
     </LineChart>
