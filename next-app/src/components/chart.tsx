@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip} from 'recharts'
-import { ItemProps } from './Item'
+import { Item } from './Item'
 
 interface PriceHistoryChartProps {
-  activeItem: ItemProps
+  activeItem: Item
 }
 
 function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
-  const [prices, setPrices] = useState<null | ItemProps>(null)
+  const [prices, setPrices] = useState<null | Item>(null)
 
   const fetchPrices = useEffect(() => {
     const getPrices = async () => {

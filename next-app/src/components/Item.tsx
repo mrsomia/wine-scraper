@@ -1,11 +1,16 @@
+import { useContext } from "react";
 
 
-export interface ItemProps {
+export interface Item {
   name: string;
   id: number;
   urlsId: number;
   prices: PriceRecord[];
+}
+
+export interface ItemProps extends Item {
   active: boolean;
+  dispatch?: ()=> void;
 }
 
 export interface PriceRecord {
@@ -18,7 +23,7 @@ export interface PriceRecord {
 }
 
 
-export function Item(props: ItemProps): JSX.Element {
+export function ItemCard(props: ItemProps): JSX.Element {
   const lastPrice = props.prices[0]
   let min = null
   const locations = ['tesco', 'supervalu', 'dunnes'] as const
@@ -30,7 +35,7 @@ export function Item(props: ItemProps): JSX.Element {
       if (price < min.price) min = { location, price }
     }
   }
- 
+  if (props.active) console.log({active: true, name: props.name})
   return min ? (
     <div className={`item flex flex-col p-5 w-80
       ${ props.active ? "bg-sky-300" : "bg-white" } rounded shadow`}>
