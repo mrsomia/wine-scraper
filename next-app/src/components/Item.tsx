@@ -5,6 +5,7 @@ export interface ItemProps {
   id: number;
   urlsId: number;
   prices: PriceRecord[];
+  active: boolean;
 }
 
 export interface PriceRecord {
@@ -29,14 +30,15 @@ export function Item(props: ItemProps): JSX.Element {
       if (price < min.price) min = { location, price }
     }
   }
-
+ 
   return min ? (
-    <div className="item flex flex-col p-1 w-80">
-      <h3 className="text-xl font-semibold py-1">{props.name}</h3>
-      <div className="flex justify-evenly">
-        <span className="mr-1">{min.location}</span>
-        <span> € {min.price.toString()}</span>
-        <span> as of {new Date(props.prices[0].dateTime).toLocaleDateString()}</span>
+    <div className={`item flex flex-col p-5 w-80
+      ${ props.active ? "bg-sky-300" : "bg-white" } rounded shadow`}>
+      <h3 className="text-xl font-semibold py-2 px-5">{props.name}</h3>
+      <div className="flex justify-around">
+        <span className="">{min.location}</span>
+        <span title={`as of ${new Date(props.prices[0].dateTime).toLocaleDateString()}`}> € {min.price.toFixed(2)}</span>
+        {/* <span> as of {new Date(props.prices[0].dateTime).toLocaleDateString()}</span> */}
       </div>
     </div>
   ) : <></>
