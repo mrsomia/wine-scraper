@@ -1,7 +1,7 @@
-import { useReducer, useEffect, createContext, Dispatch } from 'react'
+import { useReducer, useEffect } from 'react'
 import PriceHistoryChart from '../components/chart'
 import { ItemCard } from '../components/Item'
-import { initialState, stateReducer, StateContext, ACTIONTYPE} from '../lib/state-reducer'
+import { initialState, stateReducer, StateContext, DispatchContext} from '../lib/state-reducer'
 
 function UserHome(): JSX.Element {
   
@@ -19,7 +19,6 @@ function UserHome(): JSX.Element {
     }
     getData()
   }, [])
-  const DispatchContext = createContext<Dispatch<ACTIONTYPE>>(dispatch)
 
   return (
   <StateContext.Provider value={state}>

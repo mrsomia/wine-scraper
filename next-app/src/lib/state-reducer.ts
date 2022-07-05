@@ -29,6 +29,8 @@ export function stateReducer(state: typeof initialState, action: ACTIONTYPE) {
       } else {
         return {...state, items: action.payload}
       }
+    case 'UPDATE-ACTIVE':
+      return { ...state, activeItem: action.payload } 
     default:
       return state
       throw new Error("bad action type")
@@ -36,5 +38,7 @@ export function stateReducer(state: typeof initialState, action: ACTIONTYPE) {
 }
 
 export type ACTIONTYPE = | { type: 'UPDATE-ITEMS', payload: Item[] }
+                          | { type: 'UPDATE-ACTIVE', payload: Item }
 
 export const StateContext = createContext(initialState)
+export const DispatchContext = createContext<Dispatch<ACTIONTYPE>>(()=> {})

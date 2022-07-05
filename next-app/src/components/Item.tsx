@@ -1,5 +1,5 @@
 import { useContext } from "react";
-
+import { DispatchContext } from "../lib/state-reducer";
 
 export interface Item {
   name: string;
@@ -10,7 +10,6 @@ export interface Item {
 
 export interface ItemProps extends Item {
   active: boolean;
-  dispatch?: ()=> void;
 }
 
 export interface PriceRecord {
@@ -24,6 +23,8 @@ export interface PriceRecord {
 
 
 export function ItemCard(props: ItemProps): JSX.Element {
+  const dispath = useContext(DispatchContext)
+
   const lastPrice = props.prices[0]
   let min = null
   const locations = ['tesco', 'supervalu', 'dunnes'] as const
@@ -35,10 +36,15 @@ export function ItemCard(props: ItemProps): JSX.Element {
       if (price < min.price) min = { location, price }
     }
   }
+
   if (props.active) console.log({active: true, name: props.name})
   return min ? (
-    <div className={`item flex flex-col p-5 w-80
-      ${ props.active ? "bg-sky-300" : "bg-white" } rounded shadow`}>
+    <div
+      className={`flex flex-col p-5 w-80 border-solid border-4
+      ${ props.active ? "bg-sky-300" : "bg-white cursor-pointer border-sky-300"}
+      rounded shadow`}
+      onClick={() => dispath({ type: 'UPDATE-ACTIVE', payload: props })}
+    >
       <h3 className="text-xl font-semibold py-2 px-5">{props.name}</h3>
       <div className="flex justify-around">
         <span className="">{min.location}</span>
