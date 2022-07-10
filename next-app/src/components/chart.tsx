@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip} from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { Item } from './Item'
 
 interface PriceHistoryChartProps {
@@ -28,14 +28,16 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
   
   console.log({prices})
   return prices ? (
-    <LineChart height={400} width={600} data={prices.prices}>
-      <Line type="monotone" dataKey="tesco" stroke="#0284c7" />
-      <Line type="monotone" dataKey="dunnes" stroke="#0f172a" />
-      <Line type="monotone" dataKey="supervalu" stroke="#b82b35" />
-      <XAxis dataKey="dateTime"/>
-      <YAxis />
-      <Tooltip />
-    </LineChart>
+    <ResponsiveContainer aspect={3/2} width="100%" debounce={1}>
+      <LineChart data={prices.prices}>
+        <Line type="monotone" dataKey="tesco" stroke="#0284c7" />
+        <Line type="monotone" dataKey="dunnes" stroke="#0f172a" />
+        <Line type="monotone" dataKey="supervalu" stroke="#b82b35" />
+        <XAxis dataKey="dateTime"/>
+        <YAxis />
+        <Tooltip />
+      </LineChart>
+    </ResponsiveContainer>
   ) : <></>
 }
 

@@ -24,20 +24,15 @@ function UserHome(): JSX.Element {
   <StateContext.Provider value={state}>
     <DispatchContext.Provider value={dispatch}>
       <div className='py-4 px-9 flex h-screen bg-slate-100'>
-        <main className='grid grid-cols-2'>
-          <div>
-            <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
-            <div className='grid grid-cols-1 gap-5'>
-              { state.items ? state.items.map(item => (
-                <ItemCard  {...item}  active={item.id === state.activeItem?.id} key={item.id}  />
-              ))
-              :
-              <></>
-              }
-            </div>
-          </div>
-          <div className='mt-11'>
-          {state.activeItem && <PriceHistoryChart activeItem={state.activeItem}/>}
+        <main className=''>
+          <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
+          <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+            { state.items ? state.items.map(item => (
+              <ItemCard  {...item}  active={item.id === state.activeItem?.id} key={item.id}  />
+            ))
+            :
+            <></>
+            }
           </div>
         </main>
       </div>
