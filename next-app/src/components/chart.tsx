@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { Item } from './Item'
+import { Item, PriceRecord } from './Item'
 
 interface PriceHistoryChartProps {
   activeItem: Item
@@ -20,8 +20,16 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
           'Accept': 'application/JSON'
         }
       }).then(res => res.json())
-      if (response.message === 'Success')
-      setPrices(response.item)
+      if (response.message === 'Success') {
+        const { item } = response
+        const adjustedPrices = item.prices.map((priceRecord: PriceRecord) => {
+          let d = new Date(priceRecord.dateTime)
+          priceRecord.dateTime = d.toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: '2-digit'})
+          return priceRecord
+        })
+        item.prices = adjustedPrices
+        setPrices(item)
+      }
     }
     getPrices()
   }, [props.activeItem.id])
