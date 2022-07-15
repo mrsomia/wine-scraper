@@ -42,7 +42,7 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
         <Line type="natural" dataKey="dunnes" stroke="#0f172a" strokeWidth={3} animationDuration={1000} dot={false} />
         <Line type="natural" dataKey="supervalu" stroke="#b82b35" strokeWidth={3} animationDuration={1000} dot={false} />
         <XAxis dataKey="dateTime"/>
-        <YAxis />
+        <YAxis width={40}/>
         <Tooltip />
       </LineChart>
     </ResponsiveContainer>
