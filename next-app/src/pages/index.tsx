@@ -1,46 +1,10 @@
-import { useEffect, useReducer } from 'react'
-// import styles from  "../styles/UserHome.module.css"
-import { ItemProps, Item } from '../components/Item'
-// import { initialState, stateReducer } from '../utils/context'
-
-interface InitialState {
-  user: {
-    name: string,
-    id: number,
-    // favourites: ItemProps[],
-  },
-  items: null | ItemProps[],
-  activeItem: null | ItemProps
-}
-
-export const initialState: InitialState = {
-  user: {
-    name: 'Testy McTest face',
-    id: 1,
-    // favourites: []
-  },
-  items: null,
-  activeItem: null
-}
-
-
-export function stateReducer(state: typeof initialState, action: ACTIONTYPE) {
-  switch(action.type) {
-    case 'UPDATE-ITEMS':
-      if (!state.activeItem) {
-        return { ...state, items: action.payload, activeItem: action.payload[0]}
-      } else {
-        return {...state, items: action.payload}
-      }
-    default:
-      return state
-      throw new Error("bad action type")
-  }
-}
-
-type ACTIONTYPE = | { type: 'UPDATE-ITEMS', payload: ItemProps[] }
+import { useReducer, useEffect } from 'react'
+import PriceHistoryChart from '../components/chart'
+import { ItemCard } from '../components/Item'
+import { initialState, stateReducer, StateContext, DispatchContext} from '../lib/state-reducer'
 
 function UserHome(): JSX.Element {
+  
   const [state, dispatch] = useReducer(stateReducer, initialState)
 
   const getItems = useEffect(() => {
@@ -56,21 +20,25 @@ function UserHome(): JSX.Element {
     getData()
   }, [])
 
-  console.log(state)
-
-  return (<div className='p-3 flex justify-center align-center h-screen bg-gray-'>
-    <main>
-      <h1 className='font-sans font-bold text-3xl pt-3 pb-3'>Items</h1>
-      <div className='flex flex-col gap-4'>
-        { state.items ? state.items.map(item => (
-          <Item   {...item} key={item.id} />
-        ))
-        :
-        <></>
-        }
+  return (
+  <StateContext.Provider value={state}>
+    <DispatchContext.Provider value={dispatch}>
+      <div className='py-4 px-9 flex h-screen bg-slate-100 justify-center'>
+        <main className=''>
+          <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
+          <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
+            { state.items ? state.items.map(item => (
+              <ItemCard  {...item}  active={item.id === state.activeItem?.id} key={item.id}  />
+            ))
+            :
+            <></>
+            }
+          </div>
+        </main>
       </div>
-    </main>
-  </div>)
+    </DispatchContext.Provider>
+  </StateContext.Provider> 
+  )
 }
 
 export default UserHome

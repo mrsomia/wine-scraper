@@ -18,6 +18,7 @@
     "@types/node-schedule": "2.1.0",
     "c8": "^7.11.3",
     "nodemon": "^2.0.18",
+    "vite": "^3.0.0",
     "vitest": "0.15.1"
   },
   "scripts": {

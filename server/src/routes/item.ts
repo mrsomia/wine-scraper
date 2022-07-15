@@ -60,7 +60,8 @@ export async function updateItem(request: FastifyRequest, reply: FastifyReply): 
 }
 
 export async function getAllOfItem(request: FastifyRequest, reply: FastifyReply): Promise<any> {
-  const { body: item } = request
+  let { body: item } = request
+  if (typeof item === 'string') item = JSON.parse(item)
   let requestedItem = z.object({
     id: z.number()
   })
