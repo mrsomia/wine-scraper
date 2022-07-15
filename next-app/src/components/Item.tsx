@@ -57,7 +57,7 @@ export function ItemCard(props: ItemProps): JSX.Element {
       </div>
       <div
         className={`col-start-1 lg:col-start-2 row-span-3
-        lg:row-start-1 lg:col-span-2 md:row-start-1 md:col-start-2`}
+        lg:row-start-1 lg:col-span-2 md:row-start-1 md:col-start-2 touch-none`}
       >
         {props.active && <PriceHistoryChart activeItem={props}/>}
       </div>
