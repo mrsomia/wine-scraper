@@ -38,9 +38,9 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
   return prices ? (
     <ResponsiveContainer aspect={3/2} width="100%" debounce={1}>
       <LineChart data={prices.prices}>
-        <Line type="monotone" dataKey="tesco" stroke="#0284c7" />
-        <Line type="monotone" dataKey="dunnes" stroke="#0f172a" />
-        <Line type="monotone" dataKey="supervalu" stroke="#b82b35" />
+        <Line type="natural" dataKey="tesco" stroke="#0284c7" strokeWidth={3} animationDuration={1000} />
+        <Line type="natural" dataKey="dunnes" stroke="#0f172a" strokeWidth={3} animationDuration={1000} />
+        <Line type="natural" dataKey="supervalu" stroke="#b82b35" strokeWidth={3} animationDuration={1000} />
         <XAxis dataKey="dateTime"/>
         <YAxis />
         <Tooltip />
