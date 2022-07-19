@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { Item, PriceRecord } from './Item'
+import { Item, isoToChartDate } from '../lib/utils'
 
 interface PriceHistoryChartProps {
   activeItem: Item
@@ -9,30 +9,28 @@ interface PriceHistoryChartProps {
 function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
   const [prices, setPrices] = useState<null | Item>(null)
 
-  const fetchPrices = useEffect(() => {
+  useEffect(() => {
     const getPrices = async () => {
-      let response = await fetch("http://localhost:8080/item/get-all-prices", {
-        method: 'POST',
-        body: JSON.stringify({
-          id: props.activeItem.id
-        }),
-        headers: {
-          'Accept': 'application/JSON'
-        }
-      }).then(res => res.json())
-      if (response.message === 'Success') {
-        const { item } = response
-        const adjustedPrices = item.prices.map((priceRecord: PriceRecord) => {
-          let d = new Date(priceRecord.dateTime)
-          priceRecord.dateTime = d.toLocaleDateString(undefined, {day: 'numeric', month: 'short', year: '2-digit'})
-          return priceRecord
-        })
-        item.prices = adjustedPrices
-        setPrices(item)
+      try {
+        let response = await fetch("http://localhost:8080/item/get-all-prices", {
+          method: 'POST',
+          body: JSON.stringify({
+            id: props.activeItem.id
+          }),
+          headers: {
+            'Accept': 'application/JSON'
+          }
+        }).then(res => res.json())
+        if (response.message === 'Success') {
+          const { item } = response
+          setPrices(item)
+        } 
+      } catch (e) {
+       console.error(`Error when fetching historical prices for ${props.activeItem.name}`, e) 
       }
     }
     getPrices()
-  }, [props.activeItem.id])
+  }, [props.activeItem])
   
   console.log({prices})
   return prices ? (
@@ -41,7 +39,7 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
         <Line type="natural" dataKey="tesco" stroke="#0284c7" strokeWidth={3} animationDuration={1000} dot={false} />
         <Line type="natural" dataKey="dunnes" stroke="#0f172a" strokeWidth={3} animationDuration={1000} dot={false} />
         <Line type="natural" dataKey="supervalu" stroke="#b82b35" strokeWidth={3} animationDuration={1000} dot={false} />
-        <XAxis dataKey="dateTime"/>
+        <XAxis dataKey={isoToChartDate}/>
         <YAxis width={40}/>
         <Tooltip />
       </LineChart>

@@ -1,27 +1,11 @@
 import { useContext } from "react";
 import { DispatchContext } from "../lib/state-reducer";
 import PriceHistoryChart from "./chart";
-
-export interface Item {
-  name: string;
-  id: number;
-  urlsId: number;
-  prices: PriceRecord[];
-}
+import { Item, PriceRecord } from '../lib/utils'
 
 export interface ItemProps extends Item {
   active: boolean;
 }
-
-export interface PriceRecord {
-  dateTime: string;
-  id: number;
-  itemId: number;
-  supervalu: number | null;
-  tesco: number | null;
-  dunnes: number | null;
-}
-
 
 export function ItemCard(props: ItemProps): JSX.Element {
   const dispath = useContext(DispatchContext)
