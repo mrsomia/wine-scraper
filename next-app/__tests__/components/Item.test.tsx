@@ -1,7 +1,7 @@
 import { expect, test, describe, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
-import { ItemCard } from '../src/components/Item'
-import { DispatchContext } from '../src/lib/state-reducer'
+import { ItemCard } from '../../src/components/Item'
+import { DispatchContext } from '../../src/lib/state-reducer'
 import React from 'react'
 
 const mockItemRecord = {
