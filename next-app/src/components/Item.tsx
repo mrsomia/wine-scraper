@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DispatchContext } from "../lib/state-reducer";
 import PriceHistoryChart from "./chart";
-import { Item, PriceRecord } from '../lib/utils'
+import { Item } from '../lib/utils'
 
 export interface ItemProps extends Item {
   active: boolean;
