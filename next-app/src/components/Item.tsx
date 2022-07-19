@@ -65,4 +65,4 @@ export function ItemCard(props: ItemProps): JSX.Element {
   ) : <></>
 }
 
-export default Item
+export default ItemCard
