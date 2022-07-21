@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { Item, isoToChartDate } from '../lib/utils'
+import { type Item, isoToChartDate } from '../lib/utils'
 
 interface PriceHistoryChartProps {
   activeItem: Item
