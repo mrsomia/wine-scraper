@@ -69,7 +69,7 @@ const mockedResponse = [
 ]
 
 const server = setupServer(
-  rest.get('http://127.0.0.1:8080/item-prices', (req, res, ctx) => {
+  rest.get('http://localhost:8080/item-prices', (req, res, ctx) => {
     return res(
       ctx.json(mockedResponse),
       ctx.status(200)

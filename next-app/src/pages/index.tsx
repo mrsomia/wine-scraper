@@ -10,7 +10,7 @@ function UserHome(): JSX.Element {
   const getItems = useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch('http://127.0.0.1:8080/item-prices')
+        const res = await fetch('http://localhost:8080/item-prices')
         const data = await res.json()
         dispatch( {type: 'UPDATE-ITEMS', payload: data })
       } catch (e) {
