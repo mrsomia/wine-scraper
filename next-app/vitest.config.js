@@ -8,5 +8,12 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
+    exclude: [
+      "**/node_modules/*",
+      "**/dist/*",
+      "**/cypress/*",
+      "**/e2e/*",
+      "node_modules",
+    ],
   },
 });
