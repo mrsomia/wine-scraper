@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import { fetch } from 'cross-fetch'
 import React from "react";
 import UserHome from "../../src/pages";
 import { render, screen } from "@testing-library/react";
@@ -68,6 +69,8 @@ const mockedResponse = [
   },
 ]
 
+global.fetch = fetch
+
 const server = setupServer(
   rest.get('http://localhost:8080/item-prices', (req, res, ctx) => {
     return res(
@@ -88,10 +91,7 @@ describe('User Home Page', () => {
     render(
       <UserHome />
     )
-    // screen.debug()
     expect(screen.getByText(/Items/)).toBeDefined()
-    // expect(await screen.findByText(/19 Crimes Dark Red/)).toBeDefined()
-    // connection refused for fetch calls
-    // seems to be a node issue - axios provides a different error message
+    expect(await screen.findByText(/19 Crimes Dark Red/)).toBeDefined()
   })
 })

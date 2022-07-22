@@ -32,7 +32,6 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
     getPrices()
   }, [props.activeItem])
   
-  console.log({prices})
   return prices ? (
     <ResponsiveContainer aspect={3/2} width="100%" debounce={1}>
       <LineChart data={prices.prices}>

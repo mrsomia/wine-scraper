@@ -16,6 +16,7 @@ importers:
       autoprefixer: ^10.4.7
       axios: 0.27.2
       c8: ^7.11.3
+      cross-fetch: ^3.1.5
       eslint: 8.18.0
       eslint-config-next: 12.1.6
       jsdom: ^20.0.0
@@ -46,6 +47,7 @@ importers:
       '@vitejs/plugin-react': 2.0.0_vite@3.0.0
       autoprefixer: 10.4.7_postcss@8.4.14
       c8: 7.11.3
+      cross-fetch: 3.1.5
       eslint: 8.18.0
       eslint-config-next: 12.1.6_sf5xmntopvkubjk57ilxlamohe
       jsdom: 20.0.0
@@ -1492,6 +1494,14 @@ packages:
       is-nan: 1.3.2
       luxon: 1.28.0
     dev: false
+
+  /cross-fetch/3.1.5:
+    resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
+    dependencies:
+      node-fetch: 2.6.7
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
