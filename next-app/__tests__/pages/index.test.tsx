@@ -1,8 +1,7 @@
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
-import { fetch } from 'cross-fetch'
 import React from "react";
 import UserHome from "../../src/pages";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 
@@ -69,8 +68,6 @@ const mockedResponse = [
   },
 ]
 
-global.fetch = fetch
-
 const server = setupServer(
   rest.get('http://localhost:8080/item-prices', (req, res, ctx) => {
     return res(
@@ -85,13 +82,22 @@ describe('User Home Page', () => {
   beforeAll(() => server.listen({
     onUnhandledRequest: 'error',
   }))
-  afterAll(() => server.close())
+  afterAll(() => {
+    server.close()
+    cleanup()
+  })
 
-  test('should render', async () => {
+  test('should render', () => {
     render(
       <UserHome />
     )
     expect(screen.getByText(/Items/)).toBeDefined()
+  })
+
+  test('fetches and item results', async () => {
+    render(
+      <UserHome />
+    )
     expect(await screen.findByText(/19 Crimes Dark Red/)).toBeDefined()
   })
 })
