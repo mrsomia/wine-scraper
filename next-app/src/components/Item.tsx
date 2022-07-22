@@ -22,7 +22,6 @@ export function ItemCard(props: ItemProps): JSX.Element {
     }
   }
 
-  if (props.active) console.log({active: true, name: props.name})
   return min ? (
       <>
       <div

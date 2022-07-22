@@ -1,4 +1,4 @@
-import { expect, test, describe, vi, afterEach } from 'vitest'
+import '@testing-library/jest-dom'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { ItemCard } from '../../src/components/Item'
 import { DispatchContext } from '../../src/lib/state-reducer'
@@ -21,7 +21,7 @@ const mockItemRecord = {
   ]
 }
 
-const dispathMocked = vi.fn()
+const dispathMocked = jest.fn()
 
 describe('Item component', () => {
   afterEach(cleanup)
@@ -49,7 +49,7 @@ describe('Item component', () => {
     )
 
     fireEvent.click(screen.getByRole('heading'))
-    expect(dispathMocked).toHaveBeenCalledOnce()
+    expect(dispathMocked).toHaveBeenCalledTimes(1)
     expect(dispathMocked).toHaveBeenCalledWith({ type: 'UPDATE-ACTIVE', payload: mockItemRecord})
   })
   

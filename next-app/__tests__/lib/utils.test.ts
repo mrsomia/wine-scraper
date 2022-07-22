@@ -1,4 +1,3 @@
-import { describe, test, expect } from "vitest";
 import { isoToChartDate, PriceRecord } from "../../src/lib/utils";
 
 describe('util functions', () => {
