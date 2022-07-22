@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import React from "react";
 import UserHome from "../../src/pages";
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 
@@ -82,16 +82,22 @@ describe('User Home Page', () => {
   beforeAll(() => server.listen({
     onUnhandledRequest: 'error',
   }))
-  afterAll(() => server.close())
+  afterAll(() => {
+    server.close()
+    cleanup()
+  })
 
-  test('should render', async () => {
+  test('should render', () => {
     render(
       <UserHome />
     )
-    // screen.debug()
     expect(screen.getByText(/Items/)).toBeDefined()
-    // expect(await screen.findByText(/19 Crimes Dark Red/)).toBeDefined()
-    // connection refused for fetch calls
-    // seems to be a node issue - axios provides a different error message
+  })
+
+  test('fetches and item results', async () => {
+    render(
+      <UserHome />
+    )
+    expect(await screen.findByText(/19 Crimes Dark Red/)).toBeDefined()
   })
 })

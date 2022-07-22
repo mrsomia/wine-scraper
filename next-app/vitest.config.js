@@ -15,5 +15,6 @@ export default defineConfig({
       "**/e2e/*",
       "node_modules",
     ],
+    setupFiles: ["./__tests__/vitest.setup.ts"],
   },
 });
