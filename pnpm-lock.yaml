@@ -7,6 +7,7 @@ importers:
 
   next-app:
     specifiers:
+      '@faker-js/faker': ^7.3.0
       '@playwright/test': ^1.23.4
       '@prisma/client': 4.1.0
       '@testing-library/jest-dom': ^5.16.4
@@ -43,6 +44,7 @@ importers:
       recharts: 2.1.12_v2m5e27vhdewzwhryxwfaorcca
       zod: 3.17.3
     devDependencies:
+      '@faker-js/faker': 7.3.0
       '@playwright/test': 1.23.4
       '@testing-library/jest-dom': 5.16.4
       '@testing-library/react': 13.3.0_biqbaboplfbrettd7655fr4n2y
@@ -401,6 +403,11 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@faker-js/faker/7.3.0:
+    resolution: {integrity: sha512-1W0PZezq2rxlAssoWemi9gFRD8IQxvf0FPL5Km3TOmGHFG7ib0TbFBJ0yC7D/1NsxunjNTK6WjUXV8ao/mKZ5w==}
+    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
 
   /@fastify/ajv-compiler/3.1.0:
