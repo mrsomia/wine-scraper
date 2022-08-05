@@ -14,10 +14,10 @@ export default async function handler(
 ) {
 
   let { body: item } = req
-  console.log(req)
   if (typeof item === 'string') item = JSON.parse(item)
   let requestedItem = z.object({
-    id: z.number()
+    id: z.number(),
+    numberOfPriceRecords: z.number().optional()
   })
 
   const validatedRequestedItem = requestedItem.safeParse(item)
