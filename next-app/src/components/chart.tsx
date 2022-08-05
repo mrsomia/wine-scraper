@@ -12,7 +12,7 @@ function PriceHistoryChart(props: PriceHistoryChartProps): JSX.Element{
   useEffect(() => {
     const getPrices = async () => {
       try {
-        let response = await fetch("http://localhost:8080/item/get-all-prices", {
+        let response = await fetch("/api/get-all-prices", {
           method: 'POST',
           body: JSON.stringify({
             id: props.activeItem.id
