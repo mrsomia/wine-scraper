@@ -10,7 +10,7 @@ function UserHome(): JSX.Element {
   const getItems = useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch('/api/get-items-and-latest-prices')
+        const res = await fetch('/api/item/get-items-and-latest-prices')
         const data = await res.json()
         dispatch( {type: 'UPDATE-ITEMS', payload: data })
       } catch (e) {
