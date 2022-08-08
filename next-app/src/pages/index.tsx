@@ -10,7 +10,7 @@ function UserHome(): JSX.Element {
   const getItems = useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch('http://localhost:8080/item-prices')
+        const res = await fetch('/api/item/get-items-and-latest-prices')
         const data = await res.json()
         dispatch( {type: 'UPDATE-ITEMS', payload: data })
       } catch (e) {
@@ -24,7 +24,7 @@ function UserHome(): JSX.Element {
   <StateContext.Provider value={state}>
     <DispatchContext.Provider value={dispatch}>
       <Navbar />
-      <div className='py-4 px-9 flex h-screen bg-slate-100 justify-center'>
+      <div className='py-4 px-9 flex min-h-screen bg-slate-100 justify-center'>
         <main className=''>
           <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
           <div className='grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
