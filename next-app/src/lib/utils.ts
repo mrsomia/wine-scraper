@@ -21,3 +21,8 @@ export const isoToChartDate = (priceRecord: PriceRecord) => {
     {day: 'numeric', month: 'short', year: '2-digit'}
   )
 }
+
+const dev = process.env.NODE_ENV !== 'production';
+
+// TODO: Update prod value before deployment
+export const server = dev ? 'http://localhost:3000' : '';

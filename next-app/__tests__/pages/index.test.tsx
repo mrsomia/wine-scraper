@@ -69,7 +69,7 @@ const mockedResponse = [
 ]
 
 const server = setupServer(
-  rest.get('http://localhost:8080/item-prices', (req, res, ctx) => {
+  rest.get('http://localhost:3000/api/item/get-items-and-latest-prices', (req, res, ctx) => {
     return res(
       ctx.json(mockedResponse),
       ctx.status(200)
@@ -94,6 +94,8 @@ describe('User Home Page', () => {
     expect(screen.getByText(/Items/)).toBeDefined()
   })
 
+  // this test fails since moving to relative routes on the front end
+  // The fetch call in the component fails in node as it uses a relative path
   test('fetches and item results', async () => {
     render(
       <UserHome />

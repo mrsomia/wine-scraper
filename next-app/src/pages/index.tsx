@@ -2,6 +2,7 @@ import { useReducer, useEffect } from 'react'
 import Navbar from '../components/navbar'
 import { ItemCard } from '../components/Item'
 import { initialState, stateReducer, StateContext, DispatchContext} from '../lib/state-reducer'
+import { server } from '../lib/utils'
 
 function UserHome(): JSX.Element {
   
@@ -10,7 +11,7 @@ function UserHome(): JSX.Element {
   const getItems = useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch('/api/item/get-items-and-latest-prices')
+        const res = await fetch(`${server}/api/item/get-items-and-latest-prices`)
         const data = await res.json()
         dispatch( {type: 'UPDATE-ITEMS', payload: data })
       } catch (e) {
