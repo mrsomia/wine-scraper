@@ -1,5 +1,5 @@
 import { createContext, Dispatch } from 'react'
-import { Item } from "../components/Item";
+import { Item } from "./utils";
 
 export interface InitialState {
   user: {

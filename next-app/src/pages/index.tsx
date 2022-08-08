@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react'
-import PriceHistoryChart from '../components/chart'
+import Navbar from '../components/navbar'
 import { ItemCard } from '../components/Item'
 import { initialState, stateReducer, StateContext, DispatchContext} from '../lib/state-reducer'
 
@@ -14,7 +14,7 @@ function UserHome(): JSX.Element {
         const data = await res.json()
         dispatch( {type: 'UPDATE-ITEMS', payload: data })
       } catch (e) {
-        console.log(e)
+        console.error(`Failed to fetch items`, e)
       }
     }
     getData()
@@ -23,6 +23,7 @@ function UserHome(): JSX.Element {
   return (
   <StateContext.Provider value={state}>
     <DispatchContext.Provider value={dispatch}>
+      <Navbar />
       <div className='py-4 px-9 flex h-screen bg-slate-100 justify-center'>
         <main className=''>
           <h1 className='font-sans font-bold text-3xl py-3 m-2'>Items</h1>
