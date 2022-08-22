@@ -31,7 +31,7 @@ export async function createItem(name: string, urls : Partial<Urls>) {
   return createdItem
 }
 
-export async function updateDBItem(item: {id: number, name: string}) {
+export async function updateItem(item: {id: number, name: string}) {
   const updatedItem = await prisma.item.update({
     where: {
       id: item.id
