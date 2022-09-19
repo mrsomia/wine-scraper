@@ -151,12 +151,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Handle differnt methods
-  // TODO: Add validation this comes from a verified source
   if (req.method !== "POST") {
     res.setHeader("Access-Control-Allow-Methods", "POST");
     res.status(405).json({
       message: "Error",
       error: `HTTP method ${req.method} is not permitted`,
+    });
+    return;
+  }
+
+  const { authorization } = req.headers;
+  if (authorization !== `Bearer ${process.env.SCRAPEKEY_SECRET}`) {
+    res.status(403).json({
+      message: "Error",
+      error: `Authorzation key unavailable`,
     });
     return;
   }
