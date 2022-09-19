@@ -1,20 +1,20 @@
-import { PrismaClient } from '@prisma/client'
-import type { PriceRecord, Urls, Item } from '@prisma/client'
+import { PrismaClient, Prisma } from "@prisma/client";
+import type { PriceRecord, Urls, Item } from "@prisma/client";
 
 // kept in a different file so that it can be imported into routes
-export const prisma = new PrismaClient()
+export const prisma = new PrismaClient();
 
-export async function createItem(name: string, urls : Partial<Urls>) {
-  const createdItem  = await prisma.item.create({
-    data : {
+export async function createItem(name: string, urls: Partial<Urls>) {
+  const createdItem = await prisma.item.create({
+    data: {
       name: name,
       urls: {
         create: {
           tesco: urls?.tesco,
           supervalu: urls?.supervalu,
-          dunnes: urls?.dunnes
-        }
-      }
+          dunnes: urls?.dunnes,
+        },
+      },
     },
     select: {
       id: true,
@@ -23,12 +23,12 @@ export async function createItem(name: string, urls : Partial<Urls>) {
         select: {
           tesco: true,
           supervalu: true,
-          dunnes: true
-        }
-      }
-    }
-  })
-  return createdItem
+          dunnes: true,
+        },
+      },
+    },
+  });
+  return createdItem;
 }
 
 export async function updateItem(item: { id: string; name: string }) {
@@ -43,18 +43,18 @@ export async function updateItem(item: { id: string; name: string }) {
   return updatedItem;
 }
 
-export async function getLatestItemPrices(amount= 1){
+export async function getLatestItemPrices(amount = 1) {
   const items = await prisma.item.findMany({
     include: {
       prices: {
         orderBy: {
-          dateTime: 'asc' // This needs testing to check the last item is the latest
+          dateTime: "asc", // This needs testing to check the last item is the latest
         },
-        take: -amount
-      }
-    }
-  })
-  return items
+        take: -amount,
+      },
+    },
+  });
+  return items;
 }
 
 export async function getAllItemsPrices(id: string, last = 60) {
@@ -77,15 +77,15 @@ export async function getAllItemsPrices(id: string, last = 60) {
 export async function getAllItemsAndUrls() {
   const items = await prisma.item.findMany({
     include: {
-      urls: true
-    }
-  })
-  return items
+      urls: true,
+    },
+  });
+  return items;
 }
 
-export async function addNewPrice(priceObj: Omit<PriceRecord, "id">) {
+export async function addNewPrice(priceObj: Prisma.PriceRecordCreateInput) {
   const priceRecord = await prisma.priceRecord.create({
-    data: priceObj
-  })
-  return priceRecord
+    data: priceObj,
+  });
+  return priceRecord;
 }
