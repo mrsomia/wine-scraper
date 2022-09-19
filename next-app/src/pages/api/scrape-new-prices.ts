@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import * as cheerio from "cheerio";
 import axios from "axios";
-import { type PriceRecord, type Urls, type Item } from "@prisma/client";
+import { type PriceRecord, type Urls, type Item, Prisma } from "@prisma/client";
 
 import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
 
@@ -109,20 +109,22 @@ async function createArrayOfScrapePromises(
   return scrapedPricePromises;
 }
 
-function createPriceObj(scrapedPricePromises: ScrapedPrice[]) {
+function createPriceObj(scrapedPrices: ScrapedPrice[], itemId: string) {
   const priceObj: Partial<PriceRecord> = {
+    itemId,
     dateTime: new Date(),
   };
 
-  for (let scrapedPricePromise of scrapedPricePromises) {
-    if (scrapedPricePromise.price < 0)
-      priceObj[scrapedPricePromise.location] = null;
-    priceObj[scrapedPricePromise.location] = scrapedPricePromise.price;
+  for (let scrapedPrice of scrapedPrices) {
+    if (scrapedPrice.price < 0) priceObj[scrapedPrice.location] = null;
+    priceObj[scrapedPrice.location] = scrapedPrice.price;
   }
   return priceObj;
 }
 
-function isNewPriceRecord(priceObj: any): priceObj is Omit<PriceRecord, "id"> {
+function isNewPriceRecord(
+  priceObj: any
+): priceObj is Prisma.PriceRecordCreateInput {
   // Does not check type correctly, just that the one of the locations is
   // present and not all Prisma type has all location with optionals as null
   // from the DB)
@@ -137,8 +139,8 @@ export async function scrapePricesAndAddToDB() {
   const items = await getAllItemsAndUrls();
   const priceObjs = await Promise.all(
     items.map(async (item) => {
-      const scrapedPricePromises = await createArrayOfScrapePromises(item);
-      const priceObj = createPriceObj(scrapedPricePromises);
+      const scrapedPrices = await createArrayOfScrapePromises(item);
+      const priceObj = createPriceObj(scrapedPrices, item.id);
       priceObj.itemId = item.id;
       if (isNewPriceRecord(priceObj)) {
         return priceObj;
