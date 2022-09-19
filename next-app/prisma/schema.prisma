@@ -29,7 +29,7 @@ model Urls {
 
 model PriceRecord {
   id        String   @id @default(cuid())
-  dateTime  DateTime
+  dateTime  DateTime @default(now())
   tesco     Float?
   dunnes    Float?
   supervalu Float?
