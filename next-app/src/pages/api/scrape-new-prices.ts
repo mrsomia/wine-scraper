@@ -19,15 +19,17 @@ interface ScrapedPrice {
 }
 
 async function getHTML(url: string) {
-  const { data } = await axios.get(url);
-  return data;
+  const res = await axios.get(url);
+  if (res.status >= 400)
+    throw new Error(`Fetching webpage returned status ${res.status}`);
+  return res.data;
 }
 
 function validatePrice(p: unknown): number {
   return z.number().parse(p);
 }
 
-async function getTescoPrice(url: string): Promise<ScrapedPrice> {
+async function getTescoPrice(url: string, name: string): Promise<ScrapedPrice> {
   try {
     const data = await getHTML(url);
     const $ = cheerio.load(data);
@@ -36,12 +38,18 @@ async function getTescoPrice(url: string): Promise<ScrapedPrice> {
     const price = validatePrice(p);
     return { location: "tesco", price };
   } catch (e) {
-    console.error(e);
+    console.error({
+      message: `Error fetching price for ${name}`,
+      // error: e,
+    });
     return { location: "tesco", price: -1 };
   }
 }
 
-async function getDunnesPrice(url: string): Promise<ScrapedPrice> {
+async function getDunnesPrice(
+  url: string,
+  name: string
+): Promise<ScrapedPrice> {
   try {
     const data = await getHTML(url);
     const $ = cheerio.load(data);
@@ -50,12 +58,18 @@ async function getDunnesPrice(url: string): Promise<ScrapedPrice> {
     const price = validatePrice(p);
     return { location: "dunnes", price };
   } catch (e) {
-    console.error(e);
+    console.error({
+      message: `Error fetching price for ${name}`,
+      // error: e,
+    });
     return { location: "dunnes", price: -1 };
   }
 }
 
-async function getSuperValuPrice(url: string): Promise<ScrapedPrice> {
+async function getSuperValuPrice(
+  url: string,
+  name: string
+): Promise<ScrapedPrice> {
   try {
     const data = await getHTML(url);
     const $ = cheerio.load(data);
@@ -64,7 +78,10 @@ async function getSuperValuPrice(url: string): Promise<ScrapedPrice> {
     const price = validatePrice(p);
     return { location: "supervalu", price };
   } catch (e) {
-    console.error(e);
+    console.error({
+      message: `Error fetching price for ${name}`,
+      // error: e,
+    });
     return { location: "supervalu", price: -1 };
   }
 }
@@ -77,34 +94,30 @@ const scrapeFunctions = {
 
 async function createArrayOfScrapePromises(
   item: Item & { urls: Urls }
-): Promise<PromiseSettledResult<ScrapedPrice>[]> {
+): Promise<ScrapedPrice[]> {
+  // Initiates the fetching/parsing of all prices being tracked
   let scrapePromises: Promise<ScrapedPrice>[] = [];
 
   for (let itemurl of Object.entries(item.urls)) {
     let [prop, url] = itemurl;
     if (prop === "tesco" || prop === "dunnes" || prop === "supervalu") {
       let func = scrapeFunctions[prop];
-      if (typeof url === "string") scrapePromises.push(func(url));
+      if (typeof url === "string") scrapePromises.push(func(url, item.name));
     }
   }
-  const scrapedPricePromises = await Promise.allSettled(scrapePromises);
+  const scrapedPricePromises = await Promise.all(scrapePromises);
   return scrapedPricePromises;
 }
 
-function createPriceObj(
-  scrapedPricePromises: PromiseSettledResult<ScrapedPrice>[]
-) {
+function createPriceObj(scrapedPricePromises: ScrapedPrice[]) {
   const priceObj: Partial<PriceRecord> = {
     dateTime: new Date(),
   };
 
   for (let scrapedPricePromise of scrapedPricePromises) {
-    if (scrapedPricePromise.status === "rejected") continue;
-    if (!scrapedPricePromise.value) continue;
-    if (scrapedPricePromise.value.price < 0)
-      priceObj[scrapedPricePromise.value.location] = null;
-    priceObj[scrapedPricePromise.value.location] =
-      scrapedPricePromise.value.price;
+    if (scrapedPricePromise.price < 0)
+      priceObj[scrapedPricePromise.location] = null;
+    priceObj[scrapedPricePromise.location] = scrapedPricePromise.price;
   }
   return priceObj;
 }
@@ -143,11 +156,12 @@ export default async function handler(
   // Handle differnt methods
   // TODO: Add validation this comes from a verified source
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Access-Control-Allow-Methods", "POST");
     res.status(405).json({
       message: "Error",
       error: `HTTP method ${req.method} is not permitted`,
     });
+    return;
   }
 
   await scrapePricesAndAddToDB();
