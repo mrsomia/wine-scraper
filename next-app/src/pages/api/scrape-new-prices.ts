@@ -40,7 +40,7 @@ async function getTescoPrice(url: string, name: string): Promise<ScrapedPrice> {
   } catch (e) {
     console.error({
       message: `Error fetching price for ${name}`,
-      // error: e,
+      error: e,
     });
     return { location: "tesco", price: -1 };
   }
@@ -60,7 +60,7 @@ async function getDunnesPrice(
   } catch (e) {
     console.error({
       message: `Error fetching price for ${name}`,
-      // error: e,
+      error: e,
     });
     return { location: "dunnes", price: -1 };
   }
@@ -80,7 +80,7 @@ async function getSuperValuPrice(
   } catch (e) {
     console.error({
       message: `Error fetching price for ${name}`,
-      // error: e,
+      error: e,
     });
     return { location: "supervalu", price: -1 };
   }
@@ -125,11 +125,8 @@ function createPriceObj(scrapedPrices: ScrapedPrice[], itemId: string) {
 function isNewPriceRecord(
   priceObj: any
 ): priceObj is Prisma.PriceRecordCreateInput {
-  // Does not check type correctly, just that the one of the locations is
-  // present and not all Prisma type has all location with optionals as null
-  // from the DB)
+  // only checks if one location is present
   return (
-    "dateTime" in priceObj &&
     ("supervalu" in priceObj || "tesco" in priceObj || "dunnes" in priceObj) &&
     "itemId" in priceObj
   );
@@ -141,11 +138,9 @@ export async function scrapePricesAndAddToDB() {
     items.map(async (item) => {
       const scrapedPrices = await createArrayOfScrapePromises(item);
       const priceObj = createPriceObj(scrapedPrices, item.id);
-      priceObj.itemId = item.id;
       if (isNewPriceRecord(priceObj)) {
         return priceObj;
-        // TODO: remove above line and comment out below
-        // addNewPrice(priceObj);
+        addNewPrice(priceObj);
       }
     })
   );
