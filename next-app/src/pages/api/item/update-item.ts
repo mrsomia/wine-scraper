@@ -21,7 +21,7 @@ export default async function handler(
   }
   const { body: item } = req;
   let updatedItem = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
   });
 
