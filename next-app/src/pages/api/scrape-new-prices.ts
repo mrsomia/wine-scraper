@@ -110,37 +110,25 @@ async function createArrayOfScrapePromises(
 }
 
 function createPriceObj(scrapedPrices: ScrapedPrice[], itemId: string) {
-  const priceObj: Partial<PriceRecord> = {
+  const priceObj: any = {
     itemId,
     dateTime: new Date(),
   };
 
   for (let scrapedPrice of scrapedPrices) {
-    if (scrapedPrice.price < 0) priceObj[scrapedPrice.location] = null;
     priceObj[scrapedPrice.location] = scrapedPrice.price;
+    if (scrapedPrice.price < 0) priceObj[scrapedPrice.location] = null;
   }
   return priceObj;
 }
 
-function isNewPriceRecord(
-  priceObj: any
-): priceObj is Prisma.PriceRecordCreateInput {
-  // only checks if one location is present
-  return (
-    ("supervalu" in priceObj || "tesco" in priceObj || "dunnes" in priceObj) &&
-    "itemId" in priceObj
-  );
-}
-
 export async function scrapePricesAndAddToDB() {
   const items = await getAllItemsAndUrls();
-  const priceObjs = await Promise.all(
+  await Promise.all(
     items.map(async (item) => {
       const scrapedPrices = await createArrayOfScrapePromises(item);
       const priceObj = createPriceObj(scrapedPrices, item.id);
-      if (isNewPriceRecord(priceObj)) {
-        addNewPrice(priceObj);
-      }
+      addNewPrice(priceObj);
     })
   );
 }
