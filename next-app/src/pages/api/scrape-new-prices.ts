@@ -11,7 +11,8 @@ import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
 //   name: string
 // }
 
-type location = "tesco" | "dunnes" | "supervalu";
+const locations = ["tesco", "dunnes", "supervalu"] as const;
+type location = typeof locations[number];
 
 interface ScrapedPrice {
   location: location;
@@ -86,7 +87,11 @@ async function getSuperValuPrice(
   }
 }
 
-const scrapeFunctions = {
+type scrapeFunctionObject = {
+  [T in location]: (url: string, name: string) => Promise<ScrapedPrice>;
+};
+
+const scrapeFunctions: scrapeFunctionObject = {
   tesco: getTescoPrice,
   dunnes: getDunnesPrice,
   supervalu: getSuperValuPrice,
@@ -97,14 +102,16 @@ async function createArrayOfScrapePromises(
 ): Promise<ScrapedPrice[]> {
   // Initiates the fetching/parsing of all prices being tracked
   let scrapePromises: Promise<ScrapedPrice>[] = [];
+  const { urls } = item;
 
-  for (let itemurl of Object.entries(item.urls)) {
-    let [prop, url] = itemurl;
-    if (prop === "tesco" || prop === "dunnes" || prop === "supervalu") {
-      let func = scrapeFunctions[prop];
-      if (typeof url === "string") scrapePromises.push(func(url, item.name));
+  for (const location of locations) {
+    const url = urls[location];
+    if (url) {
+      let func = scrapeFunctions[location];
+      scrapePromises.push(func(url, item.name));
     }
   }
+
   const scrapedPricePromises = await Promise.all(scrapePromises);
   return scrapedPricePromises;
 }
@@ -156,6 +163,7 @@ export default async function handler(
     return;
   }
 
+  console.log(`Scraping prices`);
   await scrapePricesAndAddToDB();
   res.status(200).json({ message: "Success" });
 }
