@@ -9,7 +9,7 @@ function Navbar(){
             <Link href='/'>Home</Link>
           </li>
           <li className="inline">
-            <Link href='/Login'>Login</Link>
+            <Link href='/login'>Login</Link>
           </li>
         </ul>
       </nav>
