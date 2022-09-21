@@ -16,9 +16,9 @@ export default async function handler(
   let { body: item } = req
   if (typeof item === 'string') item = JSON.parse(item)
   let requestedItem = z.object({
-    id: z.number(),
-    numberOfPriceRecords: z.number().optional()
-  })
+    id: z.string(),
+    numberOfPriceRecords: z.number().optional(),
+  });
 
   const validatedRequestedItem = requestedItem.safeParse(item)
 
