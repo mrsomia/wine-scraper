@@ -1,28 +1,56 @@
 {
-  "name": "wine-scraper",
-  "version": "1.0.0",
-  "description": "A web scraper designed to pull prices from various Irish SuperMarkets and notify my when there is a price drop in an item I am tracking. For how to set this up, you can see the [setup.md](./setup.md) file",
-  "main": "index.js",
-  "workspaces": [
-    "next-app",
-    "server"
-  ],
-  "dependencies": {},
+  "name": "next-app",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "pnpm -r test",
-    "dev": "pnpm -r dev",
-    "dev:next": "cd next-app; pnpm run dev",
-    "dev:server": "cd server; pnpm run dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest --watch",
+    "test:e2e": "playwright test",
+    "postinstall": "prisma generate"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mrsomia/wine-scraper.git"
+  "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.4",
+    "@prisma/client": "4.1.0",
+    "axios": "0.27.2",
+    "cheerio": "^1.0.0-rc.11",
+    "next": "12.2.0",
+    "next-auth": "^4.10.3",
+    "prisma": "^4.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "recharts": "2.1.12",
+    "zod": "^3.17.3"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mrsomia/wine-scraper/issues"
+  "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
+    "@playwright/test": "^1.23.4",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@types/node": "18.0.0",
+    "@types/react": "18.0.14",
+    "@types/react-dom": "18.0.5",
+    "@types/testing-library__jest-dom": "^5.14.5",
+    "@vitejs/plugin-react": "^2.0.0",
+    "autoprefixer": "^10.4.7",
+    "c8": "^7.11.3",
+    "cross-fetch": "^3.1.5",
+    "eslint": "8.18.0",
+    "eslint-config-next": "12.1.6",
+    "jsdom": "^20.0.0",
+    "msw": "^0.44.2",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.6",
+    "typescript": "4.7.4",
+    "vite": "^3.0.0",
+    "vitest": "0.18.1"
   },
-  "homepage": "https://github.com/mrsomia/wine-scraper#readme"
+  "engines": {
+    "pnpm": ">=3"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
 }
