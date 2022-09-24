@@ -31,16 +31,16 @@ export async function createItem(name: string, urls: Partial<Urls>) {
   return createdItem;
 }
 
-export async function updateItem(item: {id: number, name: string}) {
+export async function updateItem(item: { id: string; name: string }) {
   const updatedItem = await prisma.item.update({
     where: {
-      id: item.id
+      id: item.id,
     },
     data: {
-      name: item.name
-    }
-  })
-  return updatedItem
+      name: item.name,
+    },
+  });
+  return updatedItem;
 }
 
 export async function getLatestItemPrices(amount = 1) {
@@ -57,21 +57,21 @@ export async function getLatestItemPrices(amount = 1) {
   return items;
 }
 
-export async function getAllItemsPrices(id:number, last = 60) {
+export async function getAllItemsPrices(id: string, last = 60) {
   const items = await prisma.item.findUnique({
     where: {
-      id: id
+      id: id,
     },
     include: {
       prices: {
         orderBy: {
-          dateTime: 'asc'
+          dateTime: "asc",
         },
         take: last,
-      }
-    }
-  })
-  return items
+      },
+    },
+  });
+  return items;
 }
 
 export async function getAllItemsAndUrls() {
