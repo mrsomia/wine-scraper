@@ -1,7 +1,7 @@
-name: daily-cron
+name: daily-scrape
 on:
   schedule:
-    - cron: '0 14 * * *'
+    - cron: '*/5 * * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
@@ -10,6 +10,6 @@ jobs:
         run: |
           curl --request POST \
           --url 'https://wine-scraper.vercel.app/api/scrape-new-prices' \
-          --header "Authorization: Bearer ${SCRAPEKEY_SECRET}"
+          --header "Authorization: Bearer $SCRAPEKEY_SECRET"
 env:
   SCRAPEKEY_SECRET: ${{ secrets.SCRAPEKEY_SECRET }}
