@@ -46,7 +46,7 @@ export function ItemCard(props: ItemProps): JSX.Element {
               > € {min.price.toFixed(2)}</span>
             </>
             ) : 
-            <span>No previous prices currently recorded</span>
+            <span className="text-center italic">No Prices Available</span>
           }
         </div>
       </div>
