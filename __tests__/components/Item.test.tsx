@@ -21,6 +21,14 @@ const mockItemRecord = {
   ]
 }
 
+const noPriceRecord = {
+  active: false,
+  name: '19 Crimes',
+  id: 4,
+  urlsId: 4,
+  prices: []
+}
+
 const dispathMocked = vi.fn()
 
 describe('Item component', () => {
@@ -51,6 +59,13 @@ describe('Item component', () => {
     fireEvent.click(screen.getByRole('heading'))
     expect(dispathMocked).toHaveBeenCalledOnce()
     expect(dispathMocked).toHaveBeenCalledWith({ type: 'UPDATE-ACTIVE', payload: mockItemRecord})
+  })
+
+  test('Should handle no prices', () => {
+    render(<ItemCard {...noPriceRecord} />)
+
+    expect(screen.getByText('19 Crimes')).toBeDefined()
+    expect(screen.getByText('No Prices Available')).toBeDefined()
   })
   
 })

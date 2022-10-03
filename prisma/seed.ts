@@ -55,6 +55,26 @@ async function main() {
     console.log(addedItem)
   }
 
+
+  const addedItem = await prisma.item.create({
+    data: {
+      name: faker.commerce.productName(),
+      urls: {
+        create: {
+          tesco: `https://www.tesco.ie/groceries/en-IE/products/${faker.random.numeric(
+            9
+          )}`,
+          dunnes: `https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/product/${faker.random.numeric(
+            9
+          )}`,
+          supervalu: `https://shop.supervalu.ie/shopping/product/${faker.random.numeric(
+            10
+          )}`,
+        },
+      },
+    },
+  });
+
 }
 
 main()
