@@ -10,11 +10,11 @@ export interface ItemProps extends Item {
 export function ItemCard(props: ItemProps): JSX.Element {
   const dispath = useContext(DispatchContext)
 
-  // if prices.length 0 return a fallback
   const lastPrice = props.prices[0]
   let min = null
   const locations = ['tesco', 'supervalu', 'dunnes'] as const
 
+  // conditional to ensure there are prices in the props
   if (lastPrice) {
     for (const location of locations) {
       let price = lastPrice[location]
