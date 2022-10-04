@@ -6,10 +6,11 @@ jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Call our API route
+      - name: Initiate Scraping
+        shell: bash
+        env:
+          SCRAPEKEY_SECRET: ${{ secrets.SCRAPEKEY_SECRET }}
         run: |
           curl --request POST \
           --url 'https://wine-scraper.vercel.app/api/scrape-new-prices' \
           --header "Authorization: Bearer $SCRAPEKEY_SECRET"
-env:
-  SCRAPEKEY_SECRET: ${{ secrets.SCRAPEKEY_SECRET }}
