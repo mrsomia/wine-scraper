@@ -156,6 +156,7 @@ export default async function handler(
 
   const { authorization } = req.headers;
   if (authorization !== `Bearer ${process.env.SCRAPEKEY_SECRET}`) {
+    console.error({ authorization })
     res.status(403).json({
       message: "Error",
       error: `Authorzation key unavailable`,
