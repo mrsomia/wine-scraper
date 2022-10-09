@@ -3,13 +3,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { z, ZodError } from "zod";
 import * as cheerio from "cheerio";
 import axios, { AxiosError } from "axios";
-import { type PriceRecord, type Urls, type Item, Prisma } from "@prisma/client";
+import { type Urls, type Item } from "@prisma/client";
 
 import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
-
-// type Data = {
-//   name: string
-// }
 
 const locations = ["tesco", "dunnes", "supervalu"] as const;
 type location = typeof locations[number];
