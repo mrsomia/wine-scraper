@@ -24,16 +24,12 @@ async function getHTML(url: string) {
   return res.data;
 }
 
-function validatePrice(p: unknown): number {
-  return z.number().parse(p);
-}
-
 async function getTescoPrice(url: string): Promise<ScrapedPrice> {
   const data = await getHTML(url);
   const $ = cheerio.load(data);
   const priceElement = $(".price-per-sellable-unit .value");
   const p = parseFloat(priceElement.text());
-  const price = validatePrice(p);
+  const price = z.number().parse(p);
   return { location: "tesco", price };
 }
 
@@ -42,7 +38,7 @@ async function getDunnesPrice(url: string): Promise<ScrapedPrice> {
   const $ = cheerio.load(data);
   const priceElement = $("[itemprop=price]")[0].attribs.content;
   const p = parseFloat(priceElement.slice(1));
-  const price = validatePrice(p);
+  const price = z.number().parse(p);
   return { location: "dunnes", price };
 }
 
@@ -51,7 +47,7 @@ async function getSuperValuPrice(url: string): Promise<ScrapedPrice> {
   const $ = cheerio.load(data);
   const priceElement = $(".product-details-price-item");
   const p = parseFloat(priceElement.text().trim().slice(1));
-  const price = validatePrice(p);
+  const price = z.number().parse(p);
   return { location: "supervalu", price };
 }
 
