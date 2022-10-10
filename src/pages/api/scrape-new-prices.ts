@@ -1,15 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import * as cheerio from "cheerio";
-import axios from "axios";
-import { type PriceRecord, type Urls, type Item, Prisma } from "@prisma/client";
+import axios, { AxiosError } from "axios";
+import { type Urls, type Item } from "@prisma/client";
 
 import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
-
-// type Data = {
-//   name: string
-// }
 
 const locations = ["tesco", "dunnes", "supervalu"] as const;
 type location = typeof locations[number];
@@ -21,74 +17,40 @@ interface ScrapedPrice {
 
 async function getHTML(url: string) {
   const res = await axios.get(url);
-  if (res.status >= 400)
-    throw new Error(`Fetching webpage returned status ${res.status}`);
   return res.data;
 }
 
-function validatePrice(p: unknown): number {
-  return z.number().parse(p);
+async function getTescoPrice(url: string): Promise<ScrapedPrice> {
+  const data = await getHTML(url);
+  const $ = cheerio.load(data);
+  const priceElement = $(".price-per-sellable-unit .value");
+  const p = parseFloat(priceElement.text());
+  const price = z.number().parse(p);
+  return { location: "tesco", price };
 }
 
-async function getTescoPrice(url: string, name: string): Promise<ScrapedPrice> {
-  try {
-    const data = await getHTML(url);
-    const $ = cheerio.load(data);
-    const priceElement = $(".price-per-sellable-unit .value");
-    const p = parseFloat(priceElement.text());
-    const price = validatePrice(p);
-    return { location: "tesco", price };
-  } catch (e) {
-    console.error({
-      message: `Error fetching price for ${name}`,
-      error: e,
-    });
-    return { location: "tesco", price: -1 };
-  }
+async function getDunnesPrice(url: string): Promise<ScrapedPrice> {
+  const data = await getHTML(url);
+  const $ = cheerio.load(data);
+  const priceElement = $("[itemprop=price]")[0].attribs.content;
+  const p = parseFloat(priceElement.slice(1));
+  const price = z.number().parse(p);
+  return { location: "dunnes", price };
 }
 
-async function getDunnesPrice(
-  url: string,
-  name: string
-): Promise<ScrapedPrice> {
-  try {
-    const data = await getHTML(url);
-    const $ = cheerio.load(data);
-    const priceElement = $("[itemprop=price]")[0].attribs.content;
-    const p = parseFloat(priceElement.slice(1));
-    const price = validatePrice(p);
-    return { location: "dunnes", price };
-  } catch (e) {
-    console.error({
-      message: `Error fetching price for ${name}`,
-      error: e,
-    });
-    return { location: "dunnes", price: -1 };
-  }
+async function getSuperValuPrice(url: string): Promise<ScrapedPrice> {
+  const data = await getHTML(url);
+  const $ = cheerio.load(data);
+  const priceElement = $(".product-details-price-item");
+  const p = parseFloat(priceElement.text().trim().slice(1));
+  const price = z.number().parse(p);
+  return { location: "supervalu", price };
 }
 
-async function getSuperValuPrice(
-  url: string,
-  name: string
-): Promise<ScrapedPrice> {
-  try {
-    const data = await getHTML(url);
-    const $ = cheerio.load(data);
-    const priceElement = $(".product-details-price-item");
-    const p = parseFloat(priceElement.text().trim().slice(1));
-    const price = validatePrice(p);
-    return { location: "supervalu", price };
-  } catch (e) {
-    console.error({
-      message: `Error fetching price for ${name}`,
-      error: e,
-    });
-    return { location: "supervalu", price: -1 };
-  }
-}
+type Scraper = (url: string) => Promise<ScrapedPrice>
 
 type scrapeFunctionObject = {
-  [T in location]: (url: string, name: string) => Promise<ScrapedPrice>;
+  [T in location]: Scraper;
 };
 
 const scrapeFunctions: scrapeFunctionObject = {
@@ -96,6 +58,44 @@ const scrapeFunctions: scrapeFunctionObject = {
   dunnes: getDunnesPrice,
   supervalu: getSuperValuPrice,
 };
+
+async function scrapeErrorWrapper({
+  scraper,
+  name,
+  url,
+  location
+} : {
+  scraper: Scraper;
+  name: string;
+  url: string;
+  location: location;
+}) : Promise <ScrapedPrice> {
+  try {
+    const scrapedPrice = await scraper(url)
+    return scrapedPrice 
+  } catch (e) {
+    if (e instanceof ZodError) {
+      console.error({
+        message: `Error parsing price for ${name}`,
+        error: e
+      })
+    } else if (e instanceof AxiosError) {
+      console.error({
+        item: name,
+        url,
+        responseCode: e?.response?.status,
+        status: e?.response?.statusText,
+        axiosCode: e?.code,
+      })
+    } else if (e instanceof Error) {
+      console.error(e)
+      console.error(e.stack)
+    } else {
+      console.error(e)
+    }
+    return { location, price: -1 }
+  }
+}
 
 async function createArrayOfScrapePromises(
   item: Item & { urls: Urls }
@@ -108,7 +108,8 @@ async function createArrayOfScrapePromises(
     const url = urls[location];
     if (url) {
       let func = scrapeFunctions[location];
-      scrapePromises.push(func(url, item.name));
+      const scrapedPrice = scrapeErrorWrapper({ scraper: func, name: item.name, url, location })
+      scrapePromises.push(scrapedPrice);
     }
   }
 
@@ -156,7 +157,6 @@ export default async function handler(
 
   const { authorization } = req.headers;
   if (authorization !== `Bearer ${process.env.SCRAPEKEY_SECRET}`) {
-    console.error({ authorization })
     res.status(403).json({
       message: "Error",
       error: `Authorzation key unavailable`,
