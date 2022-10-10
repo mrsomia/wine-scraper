@@ -1,7 +1,7 @@
 name: daily-scrape
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 11 * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
