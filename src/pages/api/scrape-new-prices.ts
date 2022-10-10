@@ -161,11 +161,6 @@ export async function scrapePricesAndAddToDB() {
     items.map(async (item) => {
       const scrapedPrices = await createArrayOfScrapePromises(item);
       const priceObj = createPriceObj(scrapedPrices, item.id);
-      console.log({
-        item,
-        priceObj
-      })
-      return
       addNewPrice(priceObj);
     })
   );
