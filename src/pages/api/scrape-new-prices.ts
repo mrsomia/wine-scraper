@@ -2,10 +2,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z, ZodError } from "zod";
 import * as cheerio from "cheerio";
-import axios, { AxiosError } from "axios";
+import cloudscraper from "cloudscraper";
 import { type Urls, type Item } from "@prisma/client";
 
 import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
+import { CaptchaError, CloudflareError, ParserError, RequestError, StatusCodeError} from "cloudscraper/errors";
 
 const locations = ["tesco", "dunnes", "supervalu"] as const;
 type location = typeof locations[number];
@@ -16,8 +17,8 @@ interface ScrapedPrice {
 }
 
 async function getHTML(url: string) {
-  const res = await axios.get(url);
-  return res.data;
+  const res = await cloudscraper({ uri: url, method: "GET" });
+  return res;
 }
 
 async function getTescoPrice(url: string): Promise<ScrapedPrice> {
@@ -77,16 +78,40 @@ async function scrapeErrorWrapper({
     if (e instanceof ZodError) {
       console.error({
         message: `Error parsing price for ${name}`,
-        error: e
+        error: e.errors
       })
-    } else if (e instanceof AxiosError) {
-      console.error({
-        item: name,
-        url,
-        responseCode: e?.response?.status,
-        status: e?.response?.statusText,
-        axiosCode: e?.code,
-      })
+   } else if (e instanceof CloudflareError) {
+     console.error({
+       message: "Cloudflare Error: Internal to cloudflare or multiple challenges",
+       item: name,
+       url,
+       code: e.errorType
+     })
+   } else if (e instanceof RequestError) {
+     console.error({
+       message: "RequestError: Error fetching webpage",
+       item: name,
+       url,
+     })
+   } else if (e instanceof StatusCodeError) {
+     console.error({
+       message: "StatusCodeError: Error fetching webpage",
+       item: name,
+       url,
+       statusCode: e.statusCode,
+     })
+   } else if (e instanceof CaptchaError) {
+     console.error({
+       message: "CaptchaError: Catpcha found on page",
+       item: name,
+       url,
+     })
+   } else if (e instanceof ParserError) {
+     console.error({
+       message: "ParserError: Unable to parse JS challenge",
+       item: name,
+       url,
+     })
     } else if (e instanceof Error) {
       console.error(e)
       console.error(e.stack)
