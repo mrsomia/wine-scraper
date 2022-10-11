@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { z, ZodError } from "zod";
 import * as cheerio from "cheerio";
 import cloudscraper from "cloudscraper";
-import { type Urls, type Item } from "@prisma/client";
+import { type Urls, type Item, Prisma } from "@prisma/client";
 
 import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
 import { CaptchaError, CloudflareError, ParserError, RequestError, StatusCodeError} from "cloudscraper/errors";
@@ -155,12 +155,20 @@ function createPriceObj(scrapedPrices: ScrapedPrice[], itemId: string) {
   return priceObj;
 }
 
+function isPriceObjEmpty(priceObj: Prisma.PriceRecordCreateInput) {
+  for (const location of locations) {
+    if (priceObj[location]) return false
+  }
+  return true
+}
+
 export async function scrapePricesAndAddToDB() {
   const items = await getAllItemsAndUrls();
   await Promise.all(
     items.map(async (item) => {
       const scrapedPrices = await createArrayOfScrapePromises(item);
       const priceObj = createPriceObj(scrapedPrices, item.id);
+      if (isPriceObjEmpty(priceObj)) return     
       addNewPrice(priceObj);
     })
   );
