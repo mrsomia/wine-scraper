@@ -89,3 +89,9 @@ export async function addNewPrice(priceObj: Prisma.PriceRecordCreateInput) {
   });
   return priceRecord;
 }
+
+export async function addNewPriceRecords(priceObjs: Prisma.PriceRecordCreateManyInput[]) {
+  await prisma.priceRecord.createMany({
+    data: priceObjs
+  })
+}

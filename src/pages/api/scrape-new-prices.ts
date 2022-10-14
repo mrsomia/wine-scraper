@@ -5,7 +5,7 @@ import * as cheerio from "cheerio";
 import cloudscraper from "cloudscraper";
 import { type Urls, type Item, Prisma } from "@prisma/client";
 
-import { getAllItemsAndUrls, addNewPrice } from "../../lib/db";
+import { getAllItemsAndUrls, addNewPrice, addNewPriceRecords } from "../../lib/db";
 import { CaptchaError, CloudflareError, ParserError, RequestError, StatusCodeError} from "cloudscraper/errors";
 
 const locations = ["tesco", "dunnes", "supervalu"] as const;
@@ -164,14 +164,15 @@ function isPriceObjEmpty(priceObj: Prisma.PriceRecordCreateInput) {
 
 export async function scrapePricesAndAddToDB() {
   const items = await getAllItemsAndUrls();
-  await Promise.all(
+  const priceObjs = await Promise.all(
     items.map(async (item) => {
       const scrapedPrices = await createArrayOfScrapePromises(item);
       const priceObj = createPriceObj(scrapedPrices, item.id);
-      if (isPriceObjEmpty(priceObj)) return     
-      addNewPrice(priceObj);
+      if (isPriceObjEmpty(priceObj)) return null
+      return priceObj
     })
   );
+  addNewPriceRecords(priceObjs)
 }
 
 export default async function handler(
