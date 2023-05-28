@@ -10,9 +10,12 @@ I built this to learn Prisma, Typescript and to experiment with new libraries li
 
 I wrote webscrapers in cheerio for each of the supermarkets, I then used node schedule to run this at the same time each day. I've recently migrated this to nextjs and vercel so that I can develop a front end too and host it. I'm currently working on adding user authentication with the option to add favourites
 
-## Optimizations
+## Optimizations/TODOs
 
-Improve the UI and user experience, then focus on a mobile version
+- [ ] Improve the UI and user experience
+- [ ] Improve mobile design.
+- [ ] Move to SST (currently nextjs on a free tier vercel plan will not successfully scrape the prices I need, due to the 10 second limitations for serverless functions)
+
 
 ## Lessons Learned:
 
